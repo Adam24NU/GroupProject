@@ -1,2 +1,2 @@
 Software Engineering Methods
-I added GitHub action. Tried again
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/Adam24NU/GroupProject/tree/main.yml?branch=<branch>)
