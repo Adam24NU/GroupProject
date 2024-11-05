@@ -71,9 +71,9 @@ public class Population {
     }
   */
 
-    /**
-     * Generates and prints a report of all countries in a specific continent ordered by largest to smallest population.
-     */
+
+    // Generates and prints a report of all countries in a specific continent ordered by largest to smallest population.
+
 
     public void getCountriesByContinentPopulation() {
         Scanner scanner = new Scanner(System.in);
