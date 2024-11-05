@@ -67,7 +67,7 @@ public class Population {
             ResultSet rs = stmt.executeQuery(query);
 
             // Print column headers for clarity
-            System.out.printf("%-10s %-30s %-20s %-20s %-15s %-10s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
+            System.out.printf("%-10s %-45s %-25s %-30s %-15s %-10s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
 
             // Loop through the result set and print each record
             while (rs.next()) {
@@ -79,7 +79,7 @@ public class Population {
                 int capital = rs.getInt("Capital");
 
                 // Print each country's details in a formatted table
-                System.out.printf("%-10s %-30s %-20s %-20s %-15d %-10d%n", code, name, continent, region, population, capital);
+                System.out.printf("%-10s %-45s %-25s %-30s %-15d %-10d%n", code, name, continent, region, population, capital);
             }
         } catch (Exception e) {
             System.out.println("Query failed!");
