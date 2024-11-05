@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.*;
-
+import java.util.Scanner; // Import the Scanner class for user input
 
 public class Population {
 
@@ -16,7 +16,10 @@ public class Population {
         app.connect();
 
         // Generate report for all countries ordered by population
-        app.getCountriesByPopulation();
+        // app.getCountriesByPopulation();
+
+        // Generate report for all countries by continent
+        app.getCountriesByContinentPopulation();
 
         // Disconnect from the database
         app.disconnect();
@@ -24,12 +27,8 @@ public class Population {
 
     private Connection con = null;
 
-    /**
-     * Connects to the MySQL database.
-     */
     public void connect() {
         try {
-            // Initialize MySQL database connection using JDBC
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/world", "root", "");
             System.out.println("Connected to the database.");
         } catch (Exception e) {
@@ -38,9 +37,6 @@ public class Population {
         }
     }
 
-    /**
-     * Disconnects from the MySQL database.
-     */
     public void disconnect() {
         try {
             if (con != null) {
@@ -52,19 +48,51 @@ public class Population {
         }
     }
 
-    /**
-     * Generates and prints a report of all countries ordered by largest to smallest population.
-     */
-    public void getCountriesByPopulation() {
+  /*  public void getCountriesByPopulation() {
         try {
-            // Define SQL query to retrieve all countries sorted by population in descending order
             String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM world.country ORDER BY Population DESC";
-
-            // Create a statement object to send SQL query to the database
             Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            System.out.printf("%-10s %-45s %-25s %-30s %-15s %-10s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
+            while (rs.next()) {
+                String code = rs.getString("Code");
+                String name = rs.getString("Name");
+                String continent = rs.getString("Continent");
+                String region = rs.getString("Region");
+                int population = rs.getInt("Population");
+                int capital = rs.getInt("Capital");
+
+                System.out.printf("%-10s %-45s %-25s %-30s %-15d %-10d%n", code, name, continent, region, population, capital);
+            }
+        } catch (Exception e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+    }
+  */
+
+    /**
+     * Generates and prints a report of all countries in a specific continent ordered by largest to smallest population.
+     */
+
+    public void getCountriesByContinentPopulation() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the continent name: ");
+        String continent = scanner.nextLine();
+
+        try {
+            // Define SQL query to retrieve countries in the specified continent sorted by population in descending order
+            String query = "SELECT Code, Name, Continent, Region, Population, Capital " +
+                    "FROM world.country " +
+                    "WHERE Continent = ? " +
+                    "ORDER BY Population DESC";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, continent); // Set the continent parameter
 
             // Execute SQL query and obtain result set
-            ResultSet rs = stmt.executeQuery(query);
+            ResultSet rs = pstmt.executeQuery();
 
             // Print column headers for clarity
             System.out.printf("%-10s %-45s %-25s %-30s %-15s %-10s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
@@ -73,7 +101,6 @@ public class Population {
             while (rs.next()) {
                 String code = rs.getString("Code");
                 String name = rs.getString("Name");
-                String continent = rs.getString("Continent");
                 String region = rs.getString("Region");
                 int population = rs.getInt("Population");
                 int capital = rs.getInt("Capital");
