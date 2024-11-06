@@ -26,7 +26,7 @@ jobs:
 
       # Step 4: Build and run the application and database with Docker Compose
       - name: Run Docker Compose
-        run: docker-compose up --build --abort-on-container-exit
+        run: docker compose up --build --abort-on-container-exit
 
       # Step 5: View container logs after the build and test
       - name: View Logs
