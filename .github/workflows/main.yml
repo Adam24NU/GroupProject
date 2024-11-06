@@ -28,10 +28,10 @@ jobs:
       - name: Run Docker Compose
         run: docker compose up --build --abort-on-container-exit
 
-      # Step 5: View container logs after the build and test
+        # Step 5: View container logs after the build and test
       - name: View Logs
         run: |
           echo "==== Application Logs ===="
-          docker logs $(docker ps -q -f name=app)
+          docker logs $(docker ps -q -f name=app | head -n 1)
           echo "==== Database Logs ===="
-          docker logs $(docker ps -q -f name=db)
+          docker logs $(docker ps -q -f name=db | head -n 1)
