@@ -1,0 +1,70 @@
+@startuml UseCaseDiagram
+' Set the direction of the diagram
+left to right direction
+
+' Define actors
+' The Manager assigns tasks to the User
+actor Manager as M
+' The User performs actions to generate reports
+actor User as U
+
+' Show the relationship between Manager and User
+' The Manager delegates tasks to the User, who handles the actual operations
+M -[dotted]-> U : Assigns Tasks
+
+' Population Reports section
+package "Population Reports" {
+    ' The User can view population data organized by different administrative levels
+    U --> (View Population by Country)       : View population for each country
+    U --> (View Population by City)          : View population for each city
+    U --> (View Population by Capital City)  : View population for each capital city
+    U --> (View Population in Continent)     : View population for each continent
+    U --> (View Population in Region)        : View population for each region
+    U --> (View Population by District)      : View population for each district
+}
+
+' Shared Top N Population Reports section
+package "Shared Top N Population Reports" {
+    ' The User can view the top N populated areas, where N is a user-defined number
+    U --> (View Top N Populated Countries)   : View top N populated countries
+    U --> (View Top N Populated Cities)      : View top N populated cities
+    U --> (View Top N Populated Capital Cities) : View top N populated capital cities
+}
+
+' City vs Non-City Population section
+package "City vs Non-City Population" {
+    ' The User can compare populations living in cities versus non-city areas in various levels
+    U --> (Compare Population Living in Cities vs Not in Cities Continent) : Compare city and non-city populations for each continent
+    U --> (Compare Population Living in Cities vs Not in Cities Region)    : Compare city and non-city populations for each region
+    U --> (Compare Population Living in Cities vs Not in Cities Country)   : Compare city and non-city populations for each country
+}
+
+' Language Population Reports section
+package "Language Population Reports" {
+    ' The User can view population data for languages spoken, showing number of speakers and percentage of world population
+    U --> (View Population by Language) : Chinese, English, Hindi, Spanish, Arabic
+}
+
+' Report Generation section
+package "Report Generation" {
+    ' The User generates different types of reports after retrieving data
+    U --> (Generate Population Report)       : Generate reports on population data
+    U --> (Generate Comparative Report)      : Generate comparative reports for city vs non-city populations
+    U --> (Generate Language Report)         : Generate language population reports
+
+    ' The User can export generated reports
+    U --> (Export Report) : After Generation
+}
+
+' Data Retrieval section
+package "Data Retrieval" {
+    ' Each report generation includes data retrieval from the population database
+    (Generate Population Report) --> (Retrieve Population Data) : Fetch data for population reports
+    (Generate Comparative Report) --> (Retrieve Population Data) : Fetch data for comparative reports
+    (Generate Language Report) --> (Retrieve Population Data)    : Fetch data for language reports
+}
+
+@enduml
+
+
+
