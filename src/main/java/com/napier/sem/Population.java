@@ -24,7 +24,6 @@ public class Population {
         // app.getCountriesByPopulation();
 
         // Generate report for all countries by continent
-        app.start();
 
         // Disconnect from the database
         app.disconnect();
@@ -56,7 +55,7 @@ public class Population {
 
     public static void start()
     {
-        Scanner keyboard = new Scanner(System.in);//scanner
+       Scanner keyboard = new Scanner(System.in);//scanner
         //display of the menu options to user 1/2/3/4/5
         System.out.println();
         System.out.println("Choose one of the following options : " );
@@ -66,6 +65,7 @@ public class Population {
         System.out.println("3 : View All Capital Cities by Population in a Region");
         System.out.println("4 : View Population Living in Cities vs. Not Living in Cities in Each Region");
         System.out.println("5 : View Population Living in Cities vs. Not Living in Cities in Each Continent");
+        System.out.println("6 : Menu test for docker");
         System.out.println();
         //entry window for user to choose from options
         int entry = keyboard.nextInt();
