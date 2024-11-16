@@ -18,7 +18,7 @@ public class Population {
         Population app = new Population();
 
         // Establish database connection
-        app.connect();
+        //app.connect();
 
         // Generate report for all countries ordered by population
         // app.getCountriesByPopulation();
@@ -29,7 +29,7 @@ public class Population {
         app.disconnect();
     }
 
-    private static Connection con = null;
+    public static Connection con = null;
 
     public void connect() {
         try {
