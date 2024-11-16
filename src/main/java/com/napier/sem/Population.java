@@ -36,7 +36,7 @@ public class Population {
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/world", "root", "");
             System.out.println("Connected to the database.");
         } catch (Exception e) {
-            System.out.println("Connection failed!");
+            System.out.println("Connection failed! by bart ");
             e.printStackTrace();
         }
     }
