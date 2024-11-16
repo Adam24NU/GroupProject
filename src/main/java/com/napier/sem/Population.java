@@ -82,10 +82,10 @@ public class Population {
                 getRegionCapitalByPoplution();
                 break;
             case 4:
-                System.out.println("this is OPTION 3" + entry);//parameter passing
+                getLivingInCitiesVsNot();
                 break;
             case 5:
-                System.out.println("this is OPTION 3" + entry);//parameter passing
+                getCitiesVsNotLivingInCitiesInEachContinent();
                 break;
             default:
                 System.out.println("Invalid choice.");
@@ -215,7 +215,7 @@ public class Population {
             String query = "SELECT city.Name, country.Name AS CountryName, country.Continent, country.Region, city.Population, country.Capital FROM `city` "+
             "INNER JOIN country ON " +
             "country.Capital = city.ID " +
-            "WHERE country.Region = 'Western Europe' " +
+            "WHERE country.Region = '"+ region +"' " +
             "ORDER BY city.Population DESC LIMIT 100; ";
 
             // Prepare the statement to prevent SQL injection
@@ -244,5 +244,129 @@ public class Population {
             e.printStackTrace();
         }
     }
+
+
+//// 4 TASK View Population Living in Cities vs. Not Living in Cities in Each Region
+
+
+    public static void getLivingInCitiesVsNot() {
+        Scanner scanner = new Scanner(System.in);
+
+
+        try {
+
+            String query ="SELECT "+
+            "co.Region, "+
+            "SUM(co.Population) AS TotalPopulation, "+
+            "SUM(IFNULL(ci.Population, 0)) AS PopulationInCities, "+
+            "ROUND((SUM(IFNULL(ci.Population, 0)) / SUM(co.Population)) * 100, 2) AS PercentInCities, "+
+            "(SUM(co.Population) - SUM(IFNULL(ci.Population, 0))) AS PopulationNotInCities, "+
+            "ROUND(((SUM(co.Population) - SUM(IFNULL(ci.Population, 0))) / SUM(co.Population)) * 100, 2) AS PercentNotInCities "+
+            "FROM "+
+            "Country co "+
+            "LEFT JOIN "+
+            "City ci ON co.Code = ci.CountryCode "+
+            "GROUP BY "+
+            "co.Region "+
+            "ORDER BY "+
+            "co.Region; ";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+
+            // Execute SQL query and obtain result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print column headers for clarity
+           System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", "Region", "TotalPopulation", "PopulationInCities", "PercentInCities", "PopulationNotInCities" , "PercentNotInCities");
+
+            // Loop through the result set and print each record
+            while (rs.next()) {
+                String region = rs.getString("Region");
+                String totalPopulation = rs.getString("TotalPopulation");
+                String populationInCities = rs.getString("PopulationInCities");
+                String percentInCities = rs.getString("PercentInCities");
+                String populationNotInCities = rs.getString("PopulationNotInCities");
+                String percentNotInCities = rs.getString("percentNotInCities");
+
+
+
+                // Print each country's details in a formatted table
+                System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", region, totalPopulation, populationInCities, percentInCities, populationNotInCities ,percentNotInCities);
+            }
+        } catch (Exception e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+    }
+
+// 5 task Population Living in Cities vs. Not Living in Cities in Each Continent
+
+
+    public static void getCitiesVsNotLivingInCitiesInEachContinent() {
+        Scanner scanner = new Scanner(System.in);
+
+
+        try {
+
+            String query =
+                    "SELECT " +
+                    "c.Continent, " +
+                    "SUM(c.Population) AS Total_Population, " +
+                    "COALESCE(city_pop.Population_In_Cities, 0) AS Population_In_Cities, " +
+                    "ROUND( " +
+                    "(COALESCE(city_pop.Population_In_Cities, 0) / SUM(c.Population)) * 100, 2 " +
+                    ") AS Percentage_In_Cities, (SUM(c.Population) - COALESCE(city_pop.Population_In_Cities, 0)) AS Population_Not_In_Cities,  " +
+                    "ROUND(((SUM(c.Population) - COALESCE(city_pop.Population_In_Cities, 0)) / " +
+                    "SUM(c.Population)) * 100, 2 ) AS " + " Percentage_Not_In_Cities " +
+                    "FROM " +
+                    "Country c " +
+                    "LEFT JOIN ( " +
+                    "SELECT " +
+                    "co.Continent, " +
+                    "SUM(ci.Population) AS Population_In_Cities " +
+                    "FROM " +
+                    "City ci " +
+                    "INNER JOIN " +
+                    "Country co ON ci.CountryCode = co.Code " +
+                    "GROUP BY " +
+                    "co.Continent " +
+                    ") city_pop ON c.Continent = city_pop.Continent " +
+                    "GROUP BY " +
+                    "c.Continent " +
+                    "ORDER BY `Total_Population` DESC;";
+
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+
+            // Execute SQL query and obtain result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print column headers for clarity
+            System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", "Continent", "TotalPopulation", "PopulationInCities", "PercentInCities", "PopulationNotInCities" , "PercentNotInCities");
+
+            // Loop through the result set and print each record
+            while (rs.next()) {
+                String continent = rs.getString("Continent");
+                String totalPopulation = rs.getString("Total_Population");
+                String PopulationInCities = rs.getString("Population_In_Cities");
+                String percentInCities = rs.getString("Percentage_In_Cities");
+                String populationNotInCities = rs.getString("Population_Not_In_Cities");
+                String percentNotInCities = rs.getString("Percentage_Not_In_Cities");
+
+
+
+                // Print each country's details in a formatted table
+                System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", continent, totalPopulation, PopulationInCities, percentInCities, populationNotInCities ,percentNotInCities);
+            }
+        } catch (Exception e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+    }
+
 
 }
