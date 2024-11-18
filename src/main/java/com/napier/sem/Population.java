@@ -1,11 +1,14 @@
 package com.napier.sem;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.*;
-import java.util.Scanner; // Import the Scanner class for user input
+
 
 
 
@@ -14,16 +17,13 @@ import java.util.Scanner; // Import the Scanner class for user input
 
 public class Population {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Population app = new Population();
 
         // Establish database connection
-        //app.connect();
+        app.connect();
 
-        // Generate report for all countries ordered by population
-        // app.getCountriesByPopulation();
-
-        // Generate report for all countries by continent
+        start();
 
         // Disconnect from the database
         app.disconnect();
@@ -53,53 +53,34 @@ public class Population {
     }
 
 
-    public static void start()
-    {
-       Scanner keyboard = new Scanner(System.in);//scanner
-        //display of the menu options to user 1/2/3/4/5
-        System.out.println();
-        System.out.println("Choose one of the following options : " );
-        System.out.println();
-        System.out.println("1 : View top N populated countries");
-        System.out.println("2 : View Cities by Population in a Region");
-        System.out.println("3 : View All Capital Cities by Population in a Region");
-        System.out.println("4 : View Population Living in Cities vs. Not Living in Cities in Each Region");
-        System.out.println("5 : View Population Living in Cities vs. Not Living in Cities in Each Continent");
-        System.out.println("6 : Menu test for docker");
-        System.out.println();
-        //entry window for user to choose from options
-        int entry = keyboard.nextInt();
+    public static void start() throws IOException {
 
-// 3 switches
-        switch(entry){
-            case 1:
-                getNpopulatedCountries();
-                break;
-            case 2:
-                getPopulationInRegion();
-                break;
-            case 3:
-                getRegionCapitalByPoplution();
-                break;
-            case 4:
-                getLivingInCitiesVsNot();
-                break;
-            case 5:
-                getCitiesVsNotLivingInCitiesInEachContinent();
-                break;
-            default:
-                System.out.println("Invalid choice.");
-                break;
-        }
+        getNpopulatedCountries();
+
+        getPopulationInRegion();
+
+        getRegionCapitalByPoplution();
+
+        getLivingInCitiesVsNot();
+
+        getCitiesVsNotLivingInCitiesInEachContinent();
+
+
     }
 
 
 
 
-    public static void getNpopulatedCountries() {
-        Scanner scanner = new Scanner(System.in);
+    public static void getNpopulatedCountries() throws IOException {
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+
+        // Reading data using readLine
+        String N = reader.readLine();
+
         System.out.print("How many most populated countries in the world would you like to see? : ");
-        String N = scanner.nextLine();
+
 
 
         try {
@@ -136,8 +117,11 @@ public class Population {
         }
     }
 
-    public static void getPopulationInRegion() {
-        Scanner scanner = new Scanner(System.in);
+    public static void getPopulationInRegion() throws IOException {
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+
+
         System.out.print("Which Region from the list would you like to display : ");
 
         try {
@@ -163,8 +147,9 @@ public class Population {
                 System.out.printf("%-15s%n", region);
             }
 
+            // Reading data using readLine
+            String countryRegion = reader.readLine();
 
-            String countryRegion = scanner.nextLine();
             // Define SQL query to retrieve countries in the specified continent sorted by population in descending order
             String query = "SELECT city.Name, country.Name AS CountryName, country.Continent, country.Region, city.Population, country.Capital FROM `city`" +
                     "INNER JOIN country ON city.CountryCode = country.Code " +
@@ -204,10 +189,15 @@ public class Population {
     }
 
 /////////////////////////opcja 3 skonczona ///////////////////////////////////
-    public static void getRegionCapitalByPoplution() {
-        Scanner scanner = new Scanner(System.in);
+    public static void getRegionCapitalByPoplution() throws IOException {
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+
         System.out.print("View All Capital Cities by Population in a Region : ");
-        String region = scanner.nextLine();
+
+       // Reading data using readLine
+        String region = reader.readLine();
 
 
         try {
@@ -250,7 +240,6 @@ public class Population {
 
 
     public static void getLivingInCitiesVsNot() {
-        Scanner scanner = new Scanner(System.in);
 
 
         try {
@@ -305,7 +294,7 @@ public class Population {
 
 
     public static void getCitiesVsNotLivingInCitiesInEachContinent() {
-        Scanner scanner = new Scanner(System.in);
+
 
 
         try {
