@@ -55,6 +55,10 @@ public class Population {
         // Retrieve and display all cities in a district sorted by population
         app.getCitiesByDistrictPopulation("California");
 
+        // Retrieve and display the top N populated cities in the world
+        int L = 5;
+        app.getTopNCitiesByPopulation(L);
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -269,7 +273,7 @@ public class Population {
     public void getTopNPopulatedCountriesByContinent(String continent, int X) {
         System.out.println("The top N populated countries in a continent where N is provided by the user.");
         try {
-            // SQL query to fetch the top N countries by population in the specified continent
+            // SQL query to fetch the top X countries by population in the specified continent
             String query = "SELECT Code, Name, Continent, Region, Population, Capital " +
                     "FROM world.country " +
                     "WHERE Continent = ? " +
@@ -315,7 +319,7 @@ public class Population {
     public void getTopNPopulatedCountriesByRegion(String region, int Y) {
         System.out.println("The top N populated countries in a region where N is provided by the user.");
         try {
-            // SQL query to fetch the top N countries by population in the specified region
+            // SQL query to fetch the top Y countries by population in the specified region
             String query = "SELECT Code, Name, Continent, Region, Population, Capital " +
                     "FROM world.country " +
                     "WHERE Region = ? " +
@@ -569,6 +573,50 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+    /**
+     * Retrieves and displays the top N populated cities in the world, where N is provided as a command-line argument.
+     * @param L The number of top populated cities to retrieve.
+     */
+    public void getTopNCitiesByPopulation(int L) {
+        System.out.println("The top N populated cities in the world where N is provided by the user.");
+        try {
+            // SQL query to fetch the top L cities by population
+            String query = "SELECT ID, Name, CountryCode, District, Population " +
+                    "FROM world.city " +
+                    "ORDER BY Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the L parameter
+            pstmt.setInt(1, L);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
 
 
 
