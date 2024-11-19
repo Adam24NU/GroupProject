@@ -49,6 +49,9 @@ public class Population {
         // Retrieve and display all cities in a region sorted by population
         app.getCitiesByRegionPopulation("Eastern Europe");
 
+        // Retrieve and display all cities in a country sorted by population
+        app.getCitiesByCountryPopulation("Ukraine");
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -449,6 +452,51 @@ public class Population {
 
             // Set the region parameter
             pstmt.setString(1, region);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays all cities in a specified country, sorted by population in descending order.
+     * @param country The name of the country to filter by.
+     */
+    public void getCitiesByCountryPopulation(String country) {
+        System.out.println("All the cities in a country organised by largest population to smallest.");
+        try {
+            // SQL query to fetch cities in the specified country sorted by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Name = ? " +
+                    "ORDER BY c.Population DESC";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the country parameter
+            pstmt.setString(1, country);
 
             // Execute the query and get the result set
             ResultSet rs = pstmt.executeQuery();
