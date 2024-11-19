@@ -59,6 +59,11 @@ public class Population {
         int L = 5;
         app.getTopNCitiesByPopulation(L);
 
+        // Retrieve and display the top N populated cities in the continent
+        int M = 5; // Replace with user input if needed
+        String continent1 = "Asia"; // Replace with user input if needed
+        app.getTopNCitiesByContinentPopulation(M, continent1);
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -615,6 +620,55 @@ public class Population {
         System.out.println("");
         System.out.println("");
         System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays the top N populated cities in a specified continent, where N is provided by the user.
+     * @param M The number of top populated cities to retrieve.
+     * @param continent1 The name of the continent to filter cities.
+     */
+    public void getTopNCitiesByContinentPopulation(int M, String continent1) {
+        System.out.println("The top N populated cities in a continent where N is provided by the user.");
+        try {
+            // SQL query to fetch the top N cities in a specific continent by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Continent = ? " +
+                    "ORDER BY c.Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, continent1);
+            pstmt.setInt(2, M);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+
     }
 
 
