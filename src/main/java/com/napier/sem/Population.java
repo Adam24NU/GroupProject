@@ -30,6 +30,11 @@ public class Population {
         int N = 10; // Replace with user input if needed
         app.getTopNPopulatedCountries(N);
 
+        // Retrieve the top N populated countries in a specified continent
+        int X = 5; // Replace with user input if needed
+        String continent = "Asia"; // Replace with user input if needed
+        app.getTopNPopulatedCountriesByContinent(continent, X);
+
 
         // Disconnect from the database
         app.disconnect();
@@ -203,6 +208,7 @@ public class Population {
      * @param N The number of top populated countries to retrieve.
      */
     public void getTopNPopulatedCountries(int N) {
+        System.out.println("The top N populated countries in the world where N is provided by the user.");
         try {
             // SQL query to fetch the top N countries by population
             String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM world.country ORDER BY Population DESC LIMIT ?";
@@ -231,5 +237,56 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
     }
+
+    /**
+     * Retrieves and displays the top N populated countries in a specified continent.
+     * @param continent The continent for which the report is generated.
+     * @param X The number of top populated countries to retrieve.
+     */
+    public void getTopNPopulatedCountriesByContinent(String continent, int X) {
+        System.out.println("The top N populated countries in a continent where N is provided by the user.");
+        try {
+            // SQL query to fetch the top N countries by population in the specified continent
+            String query = "SELECT Code, Name, Continent, Region, Population, Capital " +
+                    "FROM world.country " +
+                    "WHERE Continent = ? " +
+                    "ORDER BY Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare statement to prevent SQL injection and set the parameters
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, continent); // Set the continent
+            pstmt.setInt(2, X);           // Set the limit
+
+            // Execute the query
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table header
+            System.out.printf("%-10s %-45s %-25s %-30s %-15s %-10s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
+
+            // Print each country in the result
+            while (rs.next()) {
+                String code = rs.getString("Code");
+                String name = rs.getString("Name");
+                String region = rs.getString("Region");
+                int population = rs.getInt("Population");
+                int capital = rs.getInt("Capital");
+
+                System.out.printf("%-10s %-45s %-25s %-30s %-15d %-10d%n", code, name, continent, region, population, capital);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+
 }
