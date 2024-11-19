@@ -35,6 +35,11 @@ public class Population {
         String continent = "Asia"; // Replace with user input if needed
         app.getTopNPopulatedCountriesByContinent(continent, X);
 
+        // Retrieve the top N populated countries in a specified region
+        int Y = 5; // Replace with user input if needed
+        String region = "Eastern Europe"; // Replace with user input if needed
+        app.getTopNPopulatedCountriesByRegion(region, Y);
+
 
         // Disconnect from the database
         app.disconnect();
@@ -287,6 +292,53 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+
+    /**
+     * Retrieves and displays the top N populated countries in a specified region.
+     * @param region The region for which the report is generated.
+     * @param Y The number of top populated countries to retrieve.
+     */
+    public void getTopNPopulatedCountriesByRegion(String region, int Y) {
+        System.out.println("The top N populated countries in a region where N is provided by the user.");
+        try {
+            // SQL query to fetch the top N countries by population in the specified region
+            String query = "SELECT Code, Name, Continent, Region, Population, Capital " +
+                    "FROM world.country " +
+                    "WHERE Region = ? " +
+                    "ORDER BY Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare statement to prevent SQL injection and set the parameters
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, region); // Set the region
+            pstmt.setInt(2, Y);        // Set the limit
+
+            // Execute the query
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table header
+            System.out.printf("%-10s %-45s %-25s %-30s %-15s %-10s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
+
+            // Print each country in the result
+            while (rs.next()) {
+                String code = rs.getString("Code");
+                String name = rs.getString("Name");
+                String continent = rs.getString("Continent");
+                int population = rs.getInt("Population");
+                int capital = rs.getInt("Capital");
+
+                System.out.printf("%-10s %-45s %-25s %-30s %-15d %-10d%n", code, name, continent, region, population, capital);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+
 
 
 }
