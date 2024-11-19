@@ -69,6 +69,17 @@ public class Population {
         String region1 = "Eastern Europe"; // Replace with user input if needed
         app.getTopNCitiesByRegionPopulation(K, region1);
 
+        // Retrieve and display the top N populated cities in the country
+        int P = 5;
+        String country = "Ukraine";
+        app.getTopNCitiesByCountryPopulation(P, country);
+
+        // Retrieve and display the top N populated cities in a district
+        int O = 3; // Replace with user input if needed
+        String district = "California"; // Replace with user input if needed
+        app.getTopNCitiesByDistrictPopulation(O, district);
+
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -722,7 +733,100 @@ public class Population {
         System.out.println("");
     }
 
+    /**
+     * Retrieves and displays the top N populated cities in a specific country, where N is provided by the user.
+     * @param P The number of top cities to retrieve.
+     * @param country The name of the country to filter cities.
+     */
+    public void getTopNCitiesByCountryPopulation(int P, String country) {
+        System.out.println("The top N populated cities in a country where N is provided by the user.");
+        try {
+            // SQL query to fetch the top P cities in a specific country by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Name = ? " +
+                    "ORDER BY c.Population DESC " +
+                    "LIMIT ?";
 
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, country);
+            pstmt.setInt(2, P);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays the top N populated cities in a specific district, where N is provided by the user.
+     * @param O The number of top cities to retrieve.
+     * @param district The name of the district to filter cities.
+     */
+    public void getTopNCitiesByDistrictPopulation(int O, String district) {
+        System.out.println("The top N populated cities in a district where N is provided by the user.");
+        try {
+            // SQL query to fetch the top O cities in a specific district by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "WHERE c.District = ? " +
+                    "ORDER BY c.Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, district);
+            pstmt.setInt(2, O);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String cityDistrict = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, cityDistrict, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
 
 
 
