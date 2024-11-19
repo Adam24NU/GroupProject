@@ -31,4 +31,4 @@ jobs:
       # Step 5: View container logs after the build and test
       - name: View Logs
         run:
-          docker logs worldapp-app-1
+          docker logs WorldApp-0.1-alpha-2-jar-with-dependencies.jar
