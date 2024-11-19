@@ -33,12 +33,16 @@ jobs:
         run: docker exec worldapp-app ./mvnw test
 
       # Step 5: Capture logs (if the test step fails)
-      - name: Capture Logs on Failure
-        if: failure()  # Only run if a previous step fails
+      - name: Capture Logs
+        if: failure()
         run: |
-          echo "Capturing logs from Docker containers..."
-          docker-compose logs app
-          docker-compose logs db
+          echo "Checking containers..."
+          docker ps -a
+          if docker ps -a --format "{{.Names}}" | grep -q "worldapp-app-1"; then
+            docker logs worldapp-app-1
+          else
+            echo "No such container: worldapp-app-1"
+          fi 
 
       # Step 6: Stop and cleanup services
       - name: Stop and Cleanup
