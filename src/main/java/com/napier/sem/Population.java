@@ -1,8 +1,5 @@
 package com.napier.sem;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,7 +11,7 @@ public class Population {
     // JDBC connection to the database
     private Connection con = null;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Population app = new Population();
 
         // Connect to the database
@@ -33,16 +30,54 @@ public class Population {
         int N = 10; // Replace with user input if needed
         app.getTopNPopulatedCountries(N);
 
+        // Retrieve the top N populated countries in a specified continent
+        int X = 5; // Replace with user input if needed
+        String continent = "Asia"; // Replace with user input if needed
+        app.getTopNPopulatedCountriesByContinent(continent, X);
 
-        app.getNpopulatedCountries();
+        // Retrieve the top N populated countries in a specified region
+        int Y = 5; // Replace with user input if needed
+        String region = "Eastern Europe"; // Replace with user input if needed
+        app.getTopNPopulatedCountriesByRegion(region, Y);
 
-        app.getPopulationInRegion();
+        // Retrieve and display all cities in the world, sorted by population
+        app.getAllCitiesByPopulation();
 
-        app.getRegionCapitalByPoplution();
+        // Retrieve and display all cities in a continent sorted by population
+        app.getCitiesByContinentPopulation("Asia");
 
-        app.getLivingInCitiesVsNot();
+        // Retrieve and display all cities in a region sorted by population
+        app.getCitiesByRegionPopulation("Eastern Europe");
 
-        app.getCitiesVsNotLivingInCitiesInEachContinent();
+        // Retrieve and display all cities in a country sorted by population
+        app.getCitiesByCountryPopulation("Ukraine");
+
+        // Retrieve and display all cities in a district sorted by population
+        app.getCitiesByDistrictPopulation("California");
+
+        // Retrieve and display the top N populated cities in the world
+        int L = 5;
+        app.getTopNCitiesByPopulation(L);
+
+        // Retrieve and display the top N populated cities in the continent
+        int M = 5; // Replace with user input if needed
+        String continent1 = "Asia"; // Replace with user input if needed
+        app.getTopNCitiesByContinentPopulation(M, continent1);
+
+        // Retrieve and display the top N populated cities in the region
+        int K = 5; // Replace with user input if needed
+        String region1 = "Eastern Europe"; // Replace with user input if needed
+        app.getTopNCitiesByRegionPopulation(K, region1);
+
+        // Retrieve and display the top N populated cities in the country
+        int P = 5;
+        String country = "Ukraine";
+        app.getTopNCitiesByCountryPopulation(P, country);
+
+        // Retrieve and display the top N populated cities in a district
+        int O = 3; // Replace with user input if needed
+        String district = "California"; // Replace with user input if needed
+        app.getTopNCitiesByDistrictPopulation(O, district);
 
 
         // Disconnect from the database
@@ -76,12 +111,6 @@ public class Population {
                     System.out.println("Connected to localhost");
                     con = DriverManager.getConnection("jdbc:mysql://localhost:3306/world?useSSL=false", "root", "example");
                 } else {
-
-                    /*
-                    This Version of connection works for me locally - Bart
-                    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/world", "root", "");
-
-                     */
                     System.out.println("Connected inside database");
                     con = DriverManager.getConnection("jdbc:mysql://db:3306/world?useSSL=false", "root", "example");
                 }
@@ -223,6 +252,7 @@ public class Population {
      * @param N The number of top populated countries to retrieve.
      */
     public void getTopNPopulatedCountries(int N) {
+        System.out.println("The top N populated countries in the world where N is provided by the user.");
         try {
             // SQL query to fetch the top N countries by population
             String query = "SELECT Code, Name, Continent, Region, Population, Capital FROM world.country ORDER BY Population DESC LIMIT ?";
@@ -251,43 +281,38 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
     }
 
-    /*
-    Barts code added below
+    /**
+     * Retrieves and displays the top N populated countries in a specified continent.
+     * @param continent The continent for which the report is generated.
+     * @param X The number of top populated countries to retrieve.
      */
-
-    public void getNpopulatedCountries() throws IOException {
-
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
-
-        System.out.print("How many most populated countries in the world would you like to see? : ");
-        // Reading data using readLine
-        String N = reader.readLine();
-
-
-
-
-
+    public void getTopNPopulatedCountriesByContinent(String continent, int X) {
+        System.out.println("The top N populated countries in a continent where N is provided by the user.");
         try {
-            // Define SQL query to retrieve countries in the specified continent sorted by population in descending order
+            // SQL query to fetch the top X countries by population in the specified continent
             String query = "SELECT Code, Name, Continent, Region, Population, Capital " +
                     "FROM world.country " +
-                    "ORDER BY Population DESC "+
-                    "LIMIT "+ N ;
+                    "WHERE Continent = ? " +
+                    "ORDER BY Population DESC " +
+                    "LIMIT ?";
 
-            // Prepare the statement to prevent SQL injection
+            // Prepare statement to prevent SQL injection and set the parameters
             PreparedStatement pstmt = con.prepareStatement(query);
-            // pstmt.setString(1, ); // Set the continent parameter
+            pstmt.setString(1, continent); // Set the continent
+            pstmt.setInt(2, X);           // Set the limit
 
-            // Execute SQL query and obtain result set
+            // Execute the query
             ResultSet rs = pstmt.executeQuery();
 
-            // Print column headers for clarity
-            System.out.printf("%-10s %-45s %-25s %-15s %-10s%n", "Code", "Name", "Region", "Population", "Capital");
+            // Print table header
+            System.out.printf("%-10s %-45s %-25s %-30s %-15s %-10s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
 
-            // Loop through the result set and print each record
+            // Print each country in the result
             while (rs.next()) {
                 String code = rs.getString("Code");
                 String name = rs.getString("Name");
@@ -295,269 +320,515 @@ public class Population {
                 int population = rs.getInt("Population");
                 int capital = rs.getInt("Capital");
 
-                // Print each country's details in a formatted table
-                System.out.printf("%-10s %-45s %-25s %-15d %-10d%n", code, name, region, population, capital);
-
-                System.out.println();
-                System.out.println("*************************************");
+                System.out.printf("%-10s %-45s %-25s %-30s %-15d %-10d%n", code, name, continent, region, population, capital);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
+
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
     }
 
-    public void getPopulationInRegion() throws IOException {
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
-
-
-        System.out.print("Which Region from the list would you like to display : ");
-
+    /**
+     * Retrieves and displays the top N populated countries in a specified region.
+     * @param region The region for which the report is generated.
+     * @param Y The number of top populated countries to retrieve.
+     */
+    public void getTopNPopulatedCountriesByRegion(String region, int Y) {
+        System.out.println("The top N populated countries in a region where N is provided by the user.");
         try {
+            // SQL query to fetch the top Y countries by population in the specified region
+            String query = "SELECT Code, Name, Continent, Region, Population, Capital " +
+                    "FROM world.country " +
+                    "WHERE Region = ? " +
+                    "ORDER BY Population DESC " +
+                    "LIMIT ?";
 
-            String baseQuery = "SELECT DISTINCT Region FROM `country`\n" +
-                    "ORDER BY Region;";
+            // Prepare statement to prevent SQL injection and set the parameters
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, region); // Set the region
+            pstmt.setInt(2, Y);        // Set the limit
 
-            // Prepare the statement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(baseQuery);
-            // pstmt.setString(1, ); // Set the continent parameter
-
-            // Execute SQL query and obtain result set
+            // Execute the query
             ResultSet rs = pstmt.executeQuery();
 
-            // Print column headers for clarity
-            System.out.printf("%-15s%n", "");
+            // Print table header
+            System.out.printf("%-10s %-45s %-25s %-30s %-15s %-10s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
 
-            // Loop through the result set and print each record
+            // Print each country in the result
             while (rs.next()) {
-                String region = rs.getString("Region");
-
-                // Print each region details in a formatted table
-                System.out.printf("%-15s%n", region);
-            }
-
-            // Reading data using readLine
-            String countryRegion = reader.readLine();
-
-            // Define SQL query to retrieve countries in the specified continent sorted by population in descending order
-            String query = "SELECT city.Name, country.Name AS CountryName, country.Continent, country.Region, city.Population, country.Capital FROM `city`" +
-                    "INNER JOIN country ON city.CountryCode = country.Code " +
-                    "WHERE Country.Region = '"+ countryRegion + "' " +
-                    "ORDER BY city.Population DESC LIMIT 100;"
-                    ;
-
-
-
-            // Prepare the statement to prevent SQL injection
-            pstmt = con.prepareStatement(query);
-            // pstmt.setString(1, ); // Set the continent parameter
-
-            // Execute SQL query and obtain result set
-            rs = pstmt.executeQuery();
-
-            // Print column headers for clarity
-            System.out.printf("%-50s %-30s %15s %-10s%n", "Name","Country", "Region", "Population", "Capital");
-
-
-            // Loop through the result set and print each record
-            while (rs.next()) {
-
-
-                String countryName = rs.getString("CountryName");
+                String code = rs.getString("Code");
                 String name = rs.getString("Name");
-                String region = rs.getString("Region");
-                int population = rs.getInt("Population");
-                int capital = rs.getInt("Capital");
-
-                // Print each country's details in a formatted table
-                System.out.printf("%-45s %-45s %-25s %-15d %-10d%n" , name, countryName, region, population, capital);
-
-            }
-        } catch (Exception e) {
-            System.out.println("Query failed!");
-            e.printStackTrace();
-
-        }
-        System.out.println();
-        System.out.println("*************************************");
-    }
-
-    /////////////////////////opcja 3 skonczona ///////////////////////////////////
-    public void getRegionCapitalByPoplution() throws IOException {
-
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
-
-        System.out.print("View All Capital Cities by Population in a Region : ");
-
-        // Reading data using readLine
-        String region = reader.readLine();
-
-
-        try {
-            // Define SQL query to retrieve countries in the specified continent sorted by population in descending order
-            String query = "SELECT city.Name, country.Name AS CountryName, country.Continent, country.Region, city.Population, country.Capital FROM `city` "+
-                    "INNER JOIN country ON " +
-                    "country.Capital = city.ID " +
-                    "WHERE country.Region = '"+ region +"' " +
-                    "ORDER BY city.Population DESC LIMIT 100; ";
-
-            // Prepare the statement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(query);
-            // pstmt.setString(1, ); // Set the continent parameter
-
-            // Execute SQL query and obtain result set
-            ResultSet rs = pstmt.executeQuery();
-
-            // Print column headers for clarity
-            System.out.printf("%-50s %-30s %15s %-10s%n", "Name","Country", "Region", "Population", "Capital");
-
-            // Loop through the result set and print each record
-            while (rs.next()) {
-                String countryName = rs.getString("CountryName");
-                String name = rs.getString("Name");
-                region = rs.getString("Region");
-                int population = rs.getInt("Population");
-                int capital = rs.getInt("Capital");
-
-                // Print each country's details in a formatted table
-                System.out.printf("%-45s %-45s %-25s %-15d %-10d%n" , name, countryName, region, population, capital);
-
-            }
-        } catch (Exception e) {
-            System.out.println("Query failed!");
-            e.printStackTrace();
-        }
-        System.out.println();
-        System.out.println("*************************************");
-    }
-
-
-//// 4 TASK View Population Living in Cities vs. Not Living in Cities in Each Region
-
-
-    public void getLivingInCitiesVsNot() {
-
-
-        try {
-
-            String query ="SELECT "+
-                    "co.Region, "+
-                    "SUM(co.Population) AS TotalPopulation, "+
-                    "SUM(IFNULL(ci.Population, 0)) AS PopulationInCities, "+
-                    "ROUND((SUM(IFNULL(ci.Population, 0)) / SUM(co.Population)) * 100, 2) AS PercentInCities, "+
-                    "(SUM(co.Population) - SUM(IFNULL(ci.Population, 0))) AS PopulationNotInCities, "+
-                    "ROUND(((SUM(co.Population) - SUM(IFNULL(ci.Population, 0))) / SUM(co.Population)) * 100, 2) AS PercentNotInCities "+
-                    "FROM "+
-                    "Country co "+
-                    "LEFT JOIN "+
-                    "City ci ON co.Code = ci.CountryCode "+
-                    "GROUP BY "+
-                    "co.Region "+
-                    "ORDER BY "+
-                    "co.Region; ";
-
-            // Prepare the statement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(query);
-
-
-            // Execute SQL query and obtain result set
-            ResultSet rs = pstmt.executeQuery();
-
-            // Print column headers for clarity
-            System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", "Region", "TotalPopulation", "PopulationInCities", "PercentInCities", "PopulationNotInCities" , "PercentNotInCities");
-
-            // Loop through the result set and print each record
-            while (rs.next()) {
-                String region = rs.getString("Region");
-                String totalPopulation = rs.getString("TotalPopulation");
-                String populationInCities = rs.getString("PopulationInCities");
-                String percentInCities = rs.getString("PercentInCities");
-                String populationNotInCities = rs.getString("PopulationNotInCities");
-                String percentNotInCities = rs.getString("percentNotInCities");
-
-
-
-                // Print each country's details in a formatted table
-                System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", region, totalPopulation, populationInCities, percentInCities, populationNotInCities ,percentNotInCities);
-
-
-            }
-        } catch (Exception e) {
-            System.out.println("Query failed!");
-            e.printStackTrace();
-        }
-        System.out.println();
-        System.out.println("*************************************");
-    }
-
-// 5 task Population Living in Cities vs. Not Living in Cities in Each Continent
-
-
-    public void getCitiesVsNotLivingInCitiesInEachContinent() {
-
-
-
-        try {
-
-            String query =
-                    "SELECT " +
-                            "c.Continent, " +
-                            "SUM(c.Population) AS Total_Population, " +
-                            "COALESCE(city_pop.Population_In_Cities, 0) AS Population_In_Cities, " +
-                            "ROUND( " +
-                            "(COALESCE(city_pop.Population_In_Cities, 0) / SUM(c.Population)) * 100, 2 " +
-                            ") AS Percentage_In_Cities, (SUM(c.Population) - COALESCE(city_pop.Population_In_Cities, 0)) AS Population_Not_In_Cities,  " +
-                            "ROUND(((SUM(c.Population) - COALESCE(city_pop.Population_In_Cities, 0)) / " +
-                            "SUM(c.Population)) * 100, 2 ) AS " + " Percentage_Not_In_Cities " +
-                            "FROM " +
-                            "Country c " +
-                            "LEFT JOIN ( " +
-                            "SELECT " +
-                            "co.Continent, " +
-                            "SUM(ci.Population) AS Population_In_Cities " +
-                            "FROM " +
-                            "City ci " +
-                            "INNER JOIN " +
-                            "Country co ON ci.CountryCode = co.Code " +
-                            "GROUP BY " +
-                            "co.Continent " +
-                            ") city_pop ON c.Continent = city_pop.Continent " +
-                            "GROUP BY " +
-                            "c.Continent " +
-                            "ORDER BY `Total_Population` DESC;";
-
-
-            // Prepare the statement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(query);
-
-
-            // Execute SQL query and obtain result set
-            ResultSet rs = pstmt.executeQuery();
-
-            // Print column headers for clarity
-            System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", "Continent", "TotalPopulation", "PopulationInCities", "PercentInCities", "PopulationNotInCities" , "PercentNotInCities");
-
-            // Loop through the result set and print each record
-            while (rs.next()) {
                 String continent = rs.getString("Continent");
-                String totalPopulation = rs.getString("Total_Population");
-                String PopulationInCities = rs.getString("Population_In_Cities");
-                String percentInCities = rs.getString("Percentage_In_Cities");
-                String populationNotInCities = rs.getString("Population_Not_In_Cities");
-                String percentNotInCities = rs.getString("Percentage_Not_In_Cities");
+                int population = rs.getInt("Population");
+                int capital = rs.getInt("Capital");
 
-
-
-                // Print each country's details in a formatted table
-                System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", continent, totalPopulation, PopulationInCities, percentInCities, populationNotInCities ,percentNotInCities);
+                System.out.printf("%-10s %-45s %-25s %-30s %-15d %-10d%n", code, name, continent, region, population, capital);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
     }
+
+    /**
+     * Retrieves and displays all cities in the world, sorted by population in descending order.
+     */
+    public void getAllCitiesByPopulation() {
+        System.out.println("All the cities in the world organised by largest population to smallest.");
+        try {
+            // SQL query to fetch all cities sorted by population
+            String query = "SELECT ID, Name, CountryCode, District, Population " +
+                    "FROM world.city " +
+                    "ORDER BY Population DESC";
+
+            // Create a statement to execute the query
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays all cities in a specified continent, sorted by population in descending order.
+     * @param continent The name of the continent to filter by.
+     */
+    public void getCitiesByContinentPopulation(String continent) {
+        System.out.println("All the cities in a continent organised by largest population to smallest.");
+        try {
+            // SQL query to fetch cities in the specified continent sorted by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Continent = ? " +
+                    "ORDER BY c.Population DESC";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the continent parameter
+            pstmt.setString(1, continent);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays all cities in a specified region, sorted by population in descending order.
+     * @param region The name of the region to filter by.
+     */
+    public void getCitiesByRegionPopulation(String region) {
+        System.out.println("All the cities in a region organised by largest population to smallest.");
+        try {
+            // SQL query to fetch cities in the specified region sorted by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Region = ? " +
+                    "ORDER BY c.Population DESC";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the region parameter
+            pstmt.setString(1, region);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays all cities in a specified country, sorted by population in descending order.
+     * @param country The name of the country to filter by.
+     */
+    public void getCitiesByCountryPopulation(String country) {
+        System.out.println("All the cities in a country organised by largest population to smallest.");
+        try {
+            // SQL query to fetch cities in the specified country sorted by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Name = ? " +
+                    "ORDER BY c.Population DESC";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the country parameter
+            pstmt.setString(1, country);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays all cities in a specified district, sorted by population in descending order.
+     * @param district The name of the district to filter by.
+     */
+    public void getCitiesByDistrictPopulation(String district) {
+        System.out.println("All the cities in a district organised by largest population to smallest.");
+        try {
+            // SQL query to fetch cities in the specified district sorted by population
+            String query = "SELECT ID, Name, CountryCode, District, Population " +
+                    "FROM world.city " +
+                    "WHERE District = ? " +
+                    "ORDER BY Population DESC";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the district parameter
+            pstmt.setString(1, district);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String districtName = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, districtName, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+    /**
+     * Retrieves and displays the top N populated cities in the world, where N is provided as a command-line argument.
+     * @param L The number of top populated cities to retrieve.
+     */
+    public void getTopNCitiesByPopulation(int L) {
+        System.out.println("The top N populated cities in the world where N is provided by the user.");
+        try {
+            // SQL query to fetch the top L cities by population
+            String query = "SELECT ID, Name, CountryCode, District, Population " +
+                    "FROM world.city " +
+                    "ORDER BY Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the L parameter
+            pstmt.setInt(1, L);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays the top N populated cities in a specified continent, where N is provided by the user.
+     * @param M The number of top populated cities to retrieve.
+     * @param continent1 The name of the continent to filter cities.
+     */
+    public void getTopNCitiesByContinentPopulation(int M, String continent1) {
+        System.out.println("The top N populated cities in a continent where N is provided by the user.");
+        try {
+            // SQL query to fetch the top N cities in a specific continent by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Continent = ? " +
+                    "ORDER BY c.Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, continent1);
+            pstmt.setInt(2, M);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+    /**
+     * Retrieves and displays the top K populated cities in a specified region, where N is provided by the user.
+     * @param K The number of top cities to retrieve.
+     * @param region1 The name of the region to filter cities.
+     */
+    public void getTopNCitiesByRegionPopulation(int K, String region1) {
+        System.out.println("The top N populated cities in a region where N is provided by the user.");
+        try {
+            // SQL query to fetch the top K cities in a specific region by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Region = ? " +
+                    "ORDER BY c.Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, region1);
+            pstmt.setInt(2, K);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays the top N populated cities in a specific country, where N is provided by the user.
+     * @param P The number of top cities to retrieve.
+     * @param country The name of the country to filter cities.
+     */
+    public void getTopNCitiesByCountryPopulation(int P, String country) {
+        System.out.println("The top N populated cities in a country where N is provided by the user.");
+        try {
+            // SQL query to fetch the top P cities in a specific country by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE co.Name = ? " +
+                    "ORDER BY c.Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, country);
+            pstmt.setInt(2, P);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays the top N populated cities in a specific district, where N is provided by the user.
+     * @param O The number of top cities to retrieve.
+     * @param district The name of the district to filter cities.
+     */
+    public void getTopNCitiesByDistrictPopulation(int O, String district) {
+        System.out.println("The top N populated cities in a district where N is provided by the user.");
+        try {
+            // SQL query to fetch the top O cities in a specific district by population
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "WHERE c.District = ? " +
+                    "ORDER BY c.Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, district);
+            pstmt.setInt(2, O);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String cityDistrict = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, cityDistrict, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
 
 
 }
+
