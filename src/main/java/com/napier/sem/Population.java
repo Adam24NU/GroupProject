@@ -40,6 +40,12 @@ public class Population {
         String region = "Eastern Europe"; // Replace with user input if needed
         app.getTopNPopulatedCountriesByRegion(region, Y);
 
+        // Retrieve and display all cities in the world, sorted by population
+        app.getAllCitiesByPopulation();
+
+        // Retrieve and display all cities in a continent sorted by population
+       // app.getCitiesByContinentPopulation("Asia");
+
 
         // Disconnect from the database
         app.disconnect();
@@ -337,6 +343,46 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+
+    /**
+     * Retrieves and displays all cities in the world, sorted by population in descending order.
+     */
+    public void getAllCitiesByPopulation() {
+        System.out.println("All the cities in the world organised by largest population to smallest.");
+        try {
+            // SQL query to fetch all cities sorted by population
+            String query = "SELECT ID, Name, CountryCode, District, Population " +
+                    "FROM world.city " +
+                    "ORDER BY Population DESC";
+
+            // Create a statement to execute the query
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
 
 
 
