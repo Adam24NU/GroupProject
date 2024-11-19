@@ -21,7 +21,7 @@ public class Population {
         Population app = new Population();
 
         // Establish database connection
-        app.connect();
+        app.connect() ;
 
         start();
 
@@ -29,18 +29,60 @@ public class Population {
         app.disconnect();
     }
 
-    public static Connection con = null;
-
+    /**
+     * Establishes a connection to the MySQL database.
+     * This method tries multiple times in case the database is starting up.
+     */
     public void connect() {
         try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/world", "root", "");
-            System.out.println("Connected to the database.");
-        } catch (Exception e) {
-            System.out.println("Connection failed! by bart ");
-            e.printStackTrace();
+            // Load MySQL JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Could not load SQL driver ");
+            System.exit(-1);
+        }
+
+        // Attempt to connect to the database multiple times
+        int retries = 10;
+        for (int i = 0; i < retries; ++i) {
+            System.out.println("Connecting to database...");
+
+            try {
+                // Wait briefly to give the database time to start
+                Thread.sleep(5000);
+
+                // Database connection URL based on environment
+                //if (args.length != 0 && args[0].equals("debug")) {
+
+                    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/world?useSSL=false", "root", "");
+                    System.out.println("Connected to localhost");
+              //  } else {
+
+                //    con = DriverManager.getConnection("jdbc:mysql://db:3306/world?useSSL=false", "root", "example");
+                //    System.out.println("Connected inside database");
+              //  }
+
+                System.out.println("Successfully connected");
+                break;
+            } catch (SQLException | InterruptedException e) {
+                System.out.println("Connection attempt failed: " + i);
+                e.printStackTrace();
+            }
         }
     }
 
+    public static Connection con = null;
+    /*
+        public void connect() {
+            try {
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/world", "root", "");
+                System.out.println("Connected to the database 1.");
+            } catch (Exception e) {
+                System.out.println("Connection failed! by bart ");
+                e.printStackTrace();
+            }
+        }
+    */
     public void disconnect() {
         try {
             if (con != null) {
@@ -76,10 +118,11 @@ public class Population {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(System.in));
 
+        System.out.print("How many most populated countries in the world would you like to see? : ");
         // Reading data using readLine
         String N = reader.readLine();
 
-        System.out.print("How many most populated countries in the world would you like to see? : ");
+
 
 
 
@@ -110,6 +153,9 @@ public class Population {
 
                 // Print each country's details in a formatted table
                 System.out.printf("%-10s %-45s %-25s %-15d %-10d%n", code, name, region, population, capital);
+
+                System.out.println();
+                System.out.println("*************************************");
             }
         } catch (Exception e) {
             System.out.println("Query failed!");
@@ -169,6 +215,7 @@ public class Population {
             // Print column headers for clarity
             System.out.printf("%-50s %-30s %15s %-10s%n", "Name","Country", "Region", "Population", "Capital");
 
+
             // Loop through the result set and print each record
             while (rs.next()) {
 
@@ -181,11 +228,15 @@ public class Population {
 
                 // Print each country's details in a formatted table
                 System.out.printf("%-45s %-45s %-25s %-15d %-10d%n" , name, countryName, region, population, capital);
+
             }
         } catch (Exception e) {
             System.out.println("Query failed!");
             e.printStackTrace();
+
         }
+        System.out.println();
+        System.out.println("*************************************");
     }
 
 /////////////////////////opcja 3 skonczona ///////////////////////////////////
@@ -228,11 +279,14 @@ public class Population {
 
                 // Print each country's details in a formatted table
                 System.out.printf("%-45s %-45s %-25s %-15d %-10d%n" , name, countryName, region, population, capital);
+
             }
         } catch (Exception e) {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
+        System.out.println();
+        System.out.println("*************************************");
     }
 
 
@@ -283,11 +337,15 @@ public class Population {
 
                 // Print each country's details in a formatted table
                 System.out.printf("%-30s %-15s %-20s %-15s %-25s %-10s%n", region, totalPopulation, populationInCities, percentInCities, populationNotInCities ,percentNotInCities);
+
+
             }
         } catch (Exception e) {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
+        System.out.println();
+        System.out.println("*************************************");
     }
 
 // 5 task Population Living in Cities vs. Not Living in Cities in Each Continent
