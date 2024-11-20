@@ -5,8 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.*;
+import java.util.concurrent.Callable;
 
 public class Population {
+
 
     // JDBC connection to the database
     private Connection con = null;
@@ -136,6 +138,17 @@ public class Population {
             }
         }
     }
+    /**
+            * Getter method for the database connection.
+     * This method is added specifically to facilitate unit testing by allowing the connection to be mocked.
+            * It returns the current connection to the database.
+            *
+            * Note to collaborators: This modification was made for testing purposes to mock the database connection.
+     */
+    public Connection getDatabaseConnection() {
+        return con; // Return the current database connection
+    }
+
 
     /**
      * Retrieves and displays a list of all countries ordered by population from highest to lowest.
