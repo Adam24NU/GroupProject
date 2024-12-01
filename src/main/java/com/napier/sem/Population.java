@@ -107,6 +107,11 @@ public class Population {
         // Retrieves and display the population of people, people living in cities, and people not living in cities in each continent.
         app.getPopulationInCitiesAndNotInCitiesByContinent();
 
+        // Retrieves and display the population of people, people living in cities, and people not living in cities in each region.
+        app.getPopulationInCitiesAndNotInCitiesByRegion();
+
+        // Retrieves and display the population of people, people living in cities, and people not living in cities in each country.
+
 
         // Disconnect from the database
         app.disconnect();
@@ -1192,6 +1197,56 @@ public class Population {
         System.out.println("");
     }
 
+    /**
+     * This method calculates the total population of people, the population living in cities,
+     * and the population not living in cities for each region.
+     * It queries the 'world' database and outputs the results in a formatted table.
+     *
+     * The result includes the region name, total population, the population living in cities,
+     * and the population not living in cities for each region.
+     */
+    public void getPopulationInCitiesAndNotInCitiesByRegion() {
+        System.out.println("The population of people, people living in cities, and people not living in cities in each region.");
+
+        try {
+            // SQL query to calculate total population, population living in cities,
+            // and population not living in cities for each region
+            String query = "SELECT co.Region, " +
+                    "SUM(co.Population) AS TotalPopulation, " +
+                    "SUM(CASE WHEN c.ID IS NOT NULL THEN c.Population ELSE 0 END) AS PopulationInCities, " +
+                    "SUM(CASE WHEN c.ID IS NULL THEN co.Population ELSE 0 END) AS PopulationNotInCities " +
+                    "FROM world.country co " +
+                    "LEFT JOIN world.city c ON co.Code = c.CountryCode " +
+                    "GROUP BY co.Region";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers with adjusted columns for better alignment
+            System.out.printf("%-30s %-25s %-25s %-25s%n", "Region", "Total Population", "Population In Cities", "Population Not In Cities");
+
+            // Print the result for each region
+            while (rs.next()) {
+                String region = rs.getString("Region");
+                long totalPopulation = rs.getLong("TotalPopulation");
+                long populationInCities = rs.getLong("PopulationInCities");
+                long populationNotInCities = rs.getLong("PopulationNotInCities");
+
+                // Adjusted formatting to fit large numbers and ensure proper alignment
+                System.out.printf("%-30s %-25d %-25d %-25d%n", region, totalPopulation, populationInCities, populationNotInCities);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
 
 
 }
