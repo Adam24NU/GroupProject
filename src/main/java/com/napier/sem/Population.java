@@ -104,6 +104,8 @@ public class Population {
         String region2 = "Eastern Europe"; // You can change the continent as needed
         app.getTopNPopulatedCapitalCitiesInRegion(I, region2);
 
+        // Retrieves and display the population of people, people living in cities, and people not living in cities in each continent.
+        app.getPopulationInCitiesAndNotInCitiesByContinent();
 
 
         // Disconnect from the database
@@ -1092,7 +1094,6 @@ public class Population {
         System.out.println("");
     }
 
-
     /**
      *
      * @param I The number of top capital cities to retrieve based on population.
@@ -1140,6 +1141,57 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+
+    /**
+     * This method calculates the total population of people, the population living in cities,
+     * and the population not living in cities for each continent.
+     * It queries the 'world' database and outputs the results in a formatted table.
+     *
+     * The result includes the continent name, total population, the population living in cities,
+     * and the population not living in cities.
+     */
+    public void getPopulationInCitiesAndNotInCitiesByContinent() {
+        System.out.println("The population of people, people living in cities, and people not living in cities in each continent.");
+
+        try {
+            // SQL query to calculate total population, population living in cities,
+            // and population not living in cities for each continent
+            String query = "SELECT co.Continent, " +
+                    "SUM(co.Population) AS TotalPopulation, " +
+                    "SUM(CASE WHEN c.ID IS NOT NULL THEN c.Population ELSE 0 END) AS PopulationInCities, " +
+                    "SUM(CASE WHEN c.ID IS NULL THEN co.Population ELSE 0 END) AS PopulationNotInCities " +
+                    "FROM world.country co " +
+                    "LEFT JOIN world.city c ON co.Code = c.CountryCode " +
+                    "GROUP BY co.Continent";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-20s %-20s %-20s %-20s%n", "Continent", "Total Population", "Population In Cities", "Population Not In Cities");
+
+            // Print the result for each continent
+            while (rs.next()) {
+                String continent = rs.getString("Continent");
+                long totalPopulation = rs.getLong("TotalPopulation");
+                long populationInCities = rs.getLong("PopulationInCities");
+                long populationNotInCities = rs.getLong("PopulationNotInCities");
+
+                System.out.printf("%-20s %-20d %-20d %-20d%n", continent, totalPopulation, populationInCities, populationNotInCities);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
 
 
 }
