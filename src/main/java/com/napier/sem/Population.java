@@ -94,11 +94,18 @@ public class Population {
         int G = 5; // You can change this value as needed
         app.getTopNPopulatedCapitalCities(G); // Call the method to get the top N populated capital cities
 
-        // Define N value directly (number of top capital cities to retrieve)
-        int T = 5; // You can change this value as needed
+        // Retrieve and display the top N populated capital cities in a continent where N is provided by the user.
+        int T = 10; // You can change this value as needed
         String continent2 = "Asia"; // You can change the continent as needed
-        // Call the method to get the top N populated capital cities in the specified continent
-        app.getTopNPopulatedCapitalCitiesInContinent(T, continent2);
+        app.getTopNPopulatedCapitalCitiesInContinent(T, continent2); // Call the method to get the top N populated capital cities in the specified continent
+
+        // Retrieve and display the top N populated capital cities in a region where N is provided by the user.
+        int I = 10; // You can change this value as needed
+        String region2 = "Eastern Europe"; // You can change the continent as needed
+        app.getTopNPopulatedCapitalCitiesInRegion(I, region2);
+
+
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -1049,10 +1056,10 @@ public class Population {
             // SQL query to fetch the top N capital cities in a specific continent ordered by population
             String query = "SELECT c.Name, c.CountryCode, c.Population " +
                     "FROM world.city c " +
-                    "JOIN world.country co ON c.CountryCode = co.Code " +
-                    "WHERE c.District = 'Capital' AND co.Continent = ? " +
-                    "ORDER BY c.Population DESC " +
-                    "LIMIT ?";
+                    "JOIN world.country co ON c.ID = co.Capital " +  // Join on the Capital field in country
+                    "WHERE co.Continent = ? " +  // Filter by continent
+                    "ORDER BY c.Population DESC " +  // Order by population in descending order
+                    "LIMIT ?";  // Limit the result to N cities
 
             // Prepare the statement to prevent SQL injection
             PreparedStatement pstmt = con.prepareStatement(query);
@@ -1085,6 +1092,54 @@ public class Population {
         System.out.println("");
     }
 
+
+    /**
+     *
+     * @param I The number of top capital cities to retrieve based on population.
+     * @param region2 The region in which to search for capital cities.
+     */
+    public void getTopNPopulatedCapitalCitiesInRegion(int I, String region2) {
+        System.out.println("The top " + I + " populated capital cities in the region of " + region2 + ".");
+
+        try {
+            // SQL query to fetch the top N capital cities in a specific region ordered by population
+            String query = "SELECT c.Name, c.CountryCode, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.ID = co.Capital " +  // Join on the Capital field in country
+                    "WHERE co.Region = ? " +  // Filter by region
+                    "ORDER BY c.Population DESC " +  // Order by population in descending order
+                    "LIMIT ?";  // Limit the result to N cities
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, region2); // Set the region
+            pstmt.setInt(2, I); // Set the number of top capital cities to retrieve
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-45s %-15s %-15s%n", "Name", "Country Code", "Population");
+
+            // Print each capital city in the result
+            while (rs.next()) {
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-45s %-15s %-15d%n", name, countryCode, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
 
 
 }
