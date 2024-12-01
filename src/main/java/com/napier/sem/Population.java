@@ -1214,7 +1214,7 @@ public class Population {
             String query = "SELECT co.Region, " +
                     "SUM(co.Population) AS TotalPopulation, " +
                     "SUM(CASE WHEN c.ID IS NOT NULL THEN c.Population ELSE 0 END) AS PopulationInCities, " +
-                    "SUM(CASE WHEN c.ID IS NULL THEN co.Population ELSE 0 END) AS PopulationNotInCities " +
+                    "(SUM(co.Population) - SUM(CASE WHEN c.ID IS NOT NULL THEN c.Population ELSE 0 END)) AS PopulationNotInCities " +
                     "FROM world.country co " +
                     "LEFT JOIN world.city c ON co.Code = c.CountryCode " +
                     "GROUP BY co.Region";
@@ -1247,6 +1247,7 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+
 
     /**
      * This method calculates the total population of people, the population living in cities,
