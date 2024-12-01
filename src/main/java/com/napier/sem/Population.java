@@ -1164,7 +1164,7 @@ public class Population {
             String query = "SELECT co.Continent, " +
                     "SUM(co.Population) AS TotalPopulation, " +
                     "SUM(CASE WHEN c.ID IS NOT NULL THEN c.Population ELSE 0 END) AS PopulationInCities, " +
-                    "SUM(CASE WHEN c.ID IS NULL THEN co.Population ELSE 0 END) AS PopulationNotInCities " +
+                    "(SUM(co.Population) - SUM(CASE WHEN c.ID IS NOT NULL THEN c.Population ELSE 0 END)) AS PopulationNotInCities " +
                     "FROM world.country co " +
                     "LEFT JOIN world.city c ON co.Code = c.CountryCode " +
                     "GROUP BY co.Continent";
@@ -1175,8 +1175,8 @@ public class Population {
             // Execute the query and get the result set
             ResultSet rs = pstmt.executeQuery();
 
-            // Print table headers
-            System.out.printf("%-20s %-20s %-20s %-20s%n", "Continent", "Total Population", "Population In Cities", "Population Not In Cities");
+            // Print table headers with adjusted columns for better alignment
+            System.out.printf("%-20s %-25s %-25s %-25s%n", "Continent", "Total Population", "Population In Cities", "Population Not In Cities");
 
             // Print the result for each continent
             while (rs.next()) {
@@ -1185,7 +1185,8 @@ public class Population {
                 long populationInCities = rs.getLong("PopulationInCities");
                 long populationNotInCities = rs.getLong("PopulationNotInCities");
 
-                System.out.printf("%-20s %-20d %-20d %-20d%n", continent, totalPopulation, populationInCities, populationNotInCities);
+                // Adjusted formatting to fit large numbers and ensure proper alignment
+                System.out.printf("%-20s %-25d %-25d %-25d%n", continent, totalPopulation, populationInCities, populationNotInCities);
             }
         } catch (SQLException e) {
             System.out.println("Query failed!");
