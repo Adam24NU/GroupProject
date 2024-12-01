@@ -81,7 +81,24 @@ public class Population {
         String district = "California"; // Replace with user input if needed
         app.getTopNCitiesByDistrictPopulation(O, district);
 
+        // Retrieve and display the capital cities in the world organised by largest population to smallest.
+        app.getAllCapitalCitiesByPopulation();
 
+        // Retrieve and display the capital cities in a continent organised by largest population to smallest.
+        app.getCapitalCitiesByContinentPopulation(continent);
+
+        // Retrieve and display the capital cities in a region, organized by population from largest to smallest.
+        app.getCapitalCitiesByRegionPopulation(region);
+
+        // Retrieve and display the top N populated capital cities in the world where N is provided by the user.
+        int G = 5; // You can change this value as needed
+        app.getTopNPopulatedCapitalCities(G); // Call the method to get the top N populated capital cities
+
+        // Define N value directly (number of top capital cities to retrieve)
+        int T = 5; // You can change this value as needed
+        String continent2 = "Asia"; // You can change the continent as needed
+        // Call the method to get the top N populated capital cities in the specified continent
+        app.getTopNPopulatedCapitalCitiesInContinent(T, continent2);
         // Disconnect from the database
         app.disconnect();
     }
@@ -836,6 +853,233 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays all the capital cities in the world organized by population from largest to smallest.
+     */
+    public void getAllCapitalCitiesByPopulation() {
+        System.out.println("All the capital cities in the world organized by largest population to smallest.");
+        try {
+            // SQL query to fetch all capital cities ordered by population descending
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.ID = co.Capital " +
+                    "ORDER BY c.Population DESC";
+
+            // Prepare the statement
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+
+    /**
+     * This method retrieves and displays all the capital cities in a specified continent.
+     * @param continent The name of the continent to filter capital cities by.
+     */
+
+    public void getCapitalCitiesByContinentPopulation(String continent) {
+        System.out.println("All the capital cities in a continent organised by largest population to smallest.");
+        try {
+            // SQL query to fetch capital cities in a specified continent ordered by population in descending order
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.ID = co.Capital " + // Join to get the capital city
+                    "WHERE co.Continent = ? " + // Filter by continent
+                    "ORDER BY c.Population DESC"; // Order by population in descending order
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the continent parameter
+            pstmt.setString(1, continent);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each capital city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /**
+     * Retrieves and displays all the capital cities in a specified region, organized by largest population to smallest.
+     * @param region The name of the region to filter capital cities.
+     */
+    public void getCapitalCitiesByRegionPopulation(String region) {
+        System.out.println("All the capital cities in a region, organized by population from largest to smallest.");
+        try {
+            // SQL query to fetch capital cities in a specific region, ordered by population descending
+            String query = "SELECT c.ID, c.Name, c.CountryCode, c.District, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.ID = co.Capital " +  // Join on Capital field to get capital cities
+                    "WHERE co.Region = ? " +  // Filter by region
+                    "ORDER BY c.Population DESC";  // Order by population in descending order
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the region parameter
+            pstmt.setString(1, region);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-15s %-25s %-15s%n", "ID", "Name", "Country Code", "District", "Population");
+
+            // Print each capital city in the result
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-10d %-45s %-15s %-25s %-15d%n", id, name, countryCode, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+
+    /**
+     * Retrieves and displays the top N populated capital cities in the world.
+     * @param G The number of top capital cities to retrieve.
+     */
+    public void getTopNPopulatedCapitalCities(int G) {
+        System.out.println("The top N populated capital cities in the world where N is provided by the user.");
+
+        try {
+            // SQL query to fetch the top N capital cities ordered by population
+            String query = "SELECT c.Name, c.CountryCode, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.ID = co.Capital " +  // Join on the Capital field in country
+                    "ORDER BY c.Population DESC " +  // Order by population in descending order
+                    "LIMIT ?";  // Limit the result to N cities
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the limit for N capital cities
+            pstmt.setInt(1, G);
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-45s %-15s %-15s%n", "Name", "Country Code", "Population");
+
+            // Print each capital city in the result
+            while (rs.next()) {
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-45s %-15s %-15d%n", name, countryCode, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+
+    /**
+     * Retrieves and displays the top N populated capital cities in a continent.
+     * @param T The number of top capital cities to retrieve.
+     * @param continent2 The continent for which to retrieve capital cities.
+     */
+    public void getTopNPopulatedCapitalCitiesInContinent(int T, String continent2) {
+        System.out.println("The top " + T + " populated capital cities in the continent of " + continent2 + ".");
+
+        try {
+            // SQL query to fetch the top N capital cities in a specific continent ordered by population
+            String query = "SELECT c.Name, c.CountryCode, c.Population " +
+                    "FROM world.city c " +
+                    "JOIN world.country co ON c.CountryCode = co.Code " +
+                    "WHERE c.District = 'Capital' AND co.Continent = ? " +
+                    "ORDER BY c.Population DESC " +
+                    "LIMIT ?";
+
+            // Prepare the statement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            // Set the parameters for the query
+            pstmt.setString(1, continent2); // Set the continent
+            pstmt.setInt(2, T); // Set the number of top capital cities to retrieve
+
+            // Execute the query and get the result set
+            ResultSet rs = pstmt.executeQuery();
+
+            // Print table headers
+            System.out.printf("%-45s %-15s %-15s%n", "Name", "Country Code", "Population");
+
+            // Print each capital city in the result
+            while (rs.next()) {
+                String name = rs.getString("Name");
+                String countryCode = rs.getString("CountryCode");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-45s %-15s %-15d%n", name, countryCode, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+
         System.out.println("");
         System.out.println("");
         System.out.println("");
