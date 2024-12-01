@@ -1264,8 +1264,8 @@ public class Population {
             // and population not living in cities for each country
             String query = "SELECT co.Name AS Country, " +
                     "co.Population AS TotalPopulation, " +
-                    "SUM(CASE WHEN c.ID IS NOT NULL THEN c.Population ELSE 0 END) AS PopulationInCities, " +
-                    "SUM(CASE WHEN c.ID IS NULL THEN co.Population ELSE 0 END) AS PopulationNotInCities " +
+                    "SUM(CASE WHEN c.District = 'Capital' OR c.District != '' THEN c.Population ELSE 0 END) AS PopulationInCities, " +
+                    "(co.Population - SUM(CASE WHEN c.District = 'Capital' OR c.District != '' THEN c.Population ELSE 0 END)) AS PopulationNotInCities " +
                     "FROM world.country co " +
                     "LEFT JOIN world.city c ON co.Code = c.CountryCode " +
                     "GROUP BY co.Name, co.Population";
@@ -1278,7 +1278,6 @@ public class Population {
 
             // Print table headers with adjusted columns for better alignment
             System.out.printf("%-40s %-30s %-30s %-30s%n", "Country", "Total Population", "Population In Cities", "Population Not In Cities");
-
 
             // Print the result for each country
             while (rs.next()) {
@@ -1299,6 +1298,8 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+
+
 
 
 }
