@@ -134,6 +134,9 @@ public class Population {
         // Retrieves and display people who speak the exact language
         app.getSpeakersByLanguage();
 
+        // Country report
+        app.getCountryReport();
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -1478,7 +1481,7 @@ public class Population {
         }
         System.out.println("");
         System.out.println("");
-        System.out.println("");
+
     }
 
 
@@ -1492,15 +1495,15 @@ public class Population {
         try {
             // SQL query to calculate the speakers of specific languages and their percentage of the world population
             String query = """
-            SELECT cl.Language,
-                   SUM(co.Population * cl.Percentage / 100) AS Speakers,
-                   (SUM(co.Population * cl.Percentage / 100) /
-                    (SELECT SUM(Population) FROM world.country) * 100) AS PercentageOfWorld
-            FROM world.country co
-            JOIN world.countrylanguage cl ON co.Code = cl.CountryCode
-            WHERE cl.Language IN ('Chinese', 'English', 'Hindi', 'Spanish', 'Arabic')
-            GROUP BY cl.Language
-            ORDER BY Speakers DESC
+        SELECT cl.Language,
+               SUM(co.Population * cl.Percentage / 100) AS Speakers,
+               (SUM(co.Population * cl.Percentage / 100) /
+                (SELECT SUM(Population) FROM world.country) * 100) AS PercentageOfWorld
+        FROM world.country co
+        JOIN world.countrylanguage cl ON co.Code = cl.CountryCode
+        WHERE cl.Language IN ('Chinese', 'English', 'Hindi', 'Spanish', 'Arabic')
+        GROUP BY cl.Language
+        ORDER BY Speakers DESC
         """;
 
             Statement stmt = con.createStatement();
@@ -1515,7 +1518,8 @@ public class Population {
                 long speakers = rs.getLong("Speakers");
                 double percentage = rs.getDouble("PercentageOfWorld");
 
-                System.out.printf("%-15s %-20d %-20.2f%%%n", language, speakers, percentage);
+                // Adjusted to ensure % appears immediately after the number
+                System.out.printf("%-15s %-20d %-19.2f%%%n", language, speakers, percentage);
             }
         } catch (SQLException e) {
             System.out.println("Query failed!");
@@ -1527,6 +1531,49 @@ public class Population {
     }
 
 
+
+    /**
+     * Generates a country report displaying the code, name, continent, region, population, and capital.
+     */
+    public void getCountryReport() {
+        System.out.println("Country Report - Listing Code, Name, Continent, Region, Population, and Capital:");
+        try {
+            // SQL query to fetch the required country data
+            String query = """
+            SELECT Code, Name, Continent, Region, Population, 
+                   (SELECT Name FROM world.city WHERE ID = co.Capital) AS CapitalName
+            FROM world.country co
+            ORDER BY Population DESC
+        """;
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            // Print table headers
+            System.out.printf("%-10s %-45s %-20s %-25s %-15s %-30s%n",
+                    "Code", "Name", "Continent", "Region", "Population", "Capital");
+
+            // Iterate through the result set and display each row
+            while (rs.next()) {
+                String code = rs.getString("Code");
+                String name = rs.getString("Name");
+                String continent = rs.getString("Continent");
+                String region = rs.getString("Region");
+                long population = rs.getLong("Population");
+                String capitalName = rs.getString("CapitalName");
+
+                System.out.printf("%-10s %-45s %-20s %-25s %-15d %-30s%n",
+                        code, name, continent, region, population,
+                        capitalName != null ? capitalName : "N/A");
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
 
 
 }
