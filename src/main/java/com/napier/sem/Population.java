@@ -143,6 +143,11 @@ public class Population {
         // Capital City Report
         app.getCapitalCityReport();
 
+        // Population Report
+        app.getPopulationReport("continent");
+        app.getPopulationReport("region");
+        app.getPopulationReport("country");
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -1652,6 +1657,63 @@ public class Population {
                 int population = rs.getInt("Population");
 
                 System.out.printf("%-30s %-30s %-15d%n", capitalName, countryName, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+    /*
+    * Generates population report displaying continent, region and country
+    * */
+    public void getPopulationReport(String level) {
+        System.out.println("Population Report for " + level + ":");
+        try {
+            // Determine the grouping column based on the level
+            String groupByColumn = switch (level.toLowerCase()) {
+                case "continent" -> "co.Continent";
+                case "region" -> "co.Region";
+                case "country" -> "co.Name";
+                default -> throw new IllegalArgumentException("Invalid level specified. Use 'continent', 'region', or 'country'.");
+            };
+
+            // SQL query to calculate population statistics
+            String query = """
+        SELECT %s AS Name,
+               SUM(co.Population) AS TotalPopulation,
+               SUM(CASE WHEN ci.ID IS NOT NULL THEN ci.Population ELSE 0 END) AS PopulationInCities,
+               SUM(co.Population) - SUM(CASE WHEN ci.ID IS NOT NULL THEN ci.Population ELSE 0 END) AS PopulationNotInCities,
+               (SUM(CASE WHEN ci.ID IS NOT NULL THEN ci.Population ELSE 0 END) / SUM(co.Population) * 100) AS PercentageInCities,
+               ((SUM(co.Population) - SUM(CASE WHEN ci.ID IS NOT NULL THEN ci.Population ELSE 0 END)) / SUM(co.Population) * 100) AS PercentageNotInCities
+        FROM world.country co
+        LEFT JOIN world.city ci ON co.Code = ci.CountryCode
+        GROUP BY %s
+        ORDER BY TotalPopulation DESC
+        """.formatted(groupByColumn, groupByColumn);
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            // Print table headers
+            System.out.printf("%-30s %-15s %-20s %-10s %-20s %-10s%n",
+                    "Name", "Total Pop", "In Cities", "%", "Not In Cities", "%");
+
+            // Iterate over results and print each row
+            while (rs.next()) {
+                String name = rs.getString("Name");
+                long totalPopulation = rs.getLong("TotalPopulation");
+                long populationInCities = rs.getLong("PopulationInCities");
+                long populationNotInCities = rs.getLong("PopulationNotInCities");
+                double percentageInCities = rs.getDouble("PercentageInCities");
+                double percentageNotInCities = rs.getDouble("PercentageNotInCities");
+
+                System.out.printf("%-30s %-15d %-20d %-10.2f %-20d %-10.2f%n",
+                        name, totalPopulation, populationInCities, percentageInCities,
+                        populationNotInCities, percentageNotInCities);
             }
         } catch (SQLException e) {
             System.out.println("Query failed!");
