@@ -137,6 +137,11 @@ public class Population {
         // Country report
         app.getCountryReport();
 
+        // City report
+        app.getCityReport();
+
+        //
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -1574,6 +1579,49 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+
+
+    /*
+    * Generates a city report displaying the name, country, district and population.
+    * */
+    public void getCityReport() {
+        System.out.println("City Report:");
+        try {
+            // SQL query to retrieve city details
+            String query = """
+        SELECT c.Name AS CityName, 
+               co.Name AS CountryName, 
+               c.District, 
+               c.Population
+        FROM world.city c
+        JOIN world.country co ON c.CountryCode = co.Code
+        ORDER BY c.Population DESC
+        """;
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            // Print table headers
+            System.out.printf("%-30s %-30s %-25s %-15s%n", "City Name", "Country", "District", "Population");
+
+            // Iterate over results and print each city's data
+            while (rs.next()) {
+                String cityName = rs.getString("CityName");
+                String countryName = rs.getString("CountryName");
+                String district = rs.getString("District");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-30s %-30s %-25s %-15d%n", cityName, countryName, district, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
 
 
 }
