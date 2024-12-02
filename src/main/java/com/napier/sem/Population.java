@@ -129,7 +129,7 @@ public class Population {
         app.getPopulationOfDistrict("California");
 
         // Retrieves and display the total population in the city
-
+        app.getPopulationOfCity("Oslo");
 
         // Disconnect from the database
         app.disconnect();
@@ -1449,6 +1449,33 @@ public class Population {
         }
         System.out.println("");
 
+    }
+
+
+    /**
+     * Retrieves and displays the total population of a specified city.
+     * @param city The name of the city.
+     */
+    public void getPopulationOfCity(String city) {
+        System.out.println("The total population of the city: " + city);
+        try {
+            // SQL query to calculate population of a city
+            String query = "SELECT Name, Population FROM world.city WHERE Name = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, city);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Display the result
+            if (rs.next()) {
+                System.out.printf("City: %s, Population: %d%n", rs.getString("Name"), rs.getLong("Population"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
     }
 
 
