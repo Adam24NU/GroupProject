@@ -126,6 +126,10 @@ public class Population {
         app.getPopulationOfCountry("Ukraine");
 
         // Retrieves and display the total population in the district
+        app.getPopulationOfDistrict("California");
+
+        // Retrieves and display the total population in the city
+
 
         // Disconnect from the database
         app.disconnect();
@@ -1418,10 +1422,34 @@ public class Population {
             e.printStackTrace();
         }
         System.out.println("");
-        System.out.println("");
-        System.out.println("");
+
     }
 
+    /**
+     * Retrieves and displays the total population of a specified district.
+     * @param district The name of the district.
+     */
+    public void getPopulationOfDistrict(String district) {
+        System.out.println("The total population of the district: " + district);
+        try {
+            // SQL query to calculate population of a district
+            String query = "SELECT District, SUM(Population) AS DistrictPopulation " +
+                    "FROM world.city WHERE District = ? GROUP BY District";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, district);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Display the result
+            if (rs.next()) {
+                System.out.printf("District: %s, Population: %d%n", rs.getString("District"), rs.getLong("DistrictPopulation"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+
+    }
 
 
 }
