@@ -140,7 +140,8 @@ public class Population {
         // City report
         app.getCityReport();
 
-        //
+        // Capital City Report
+        app.getCapitalCityReport();
 
         // Disconnect from the database
         app.disconnect();
@@ -1622,6 +1623,44 @@ public class Population {
         System.out.println("");
     }
 
+    /*
+    * Generates a capital city report displaying the name, country, and population.
+    * */
+    public void getCapitalCityReport() {
+        System.out.println("Capital City Report:");
+        try {
+            // SQL query to retrieve capital city details
+            String query = """
+        SELECT c.Name AS CapitalName, 
+               co.Name AS CountryName, 
+               c.Population
+        FROM world.country co
+        JOIN world.city c ON co.Capital = c.ID
+        ORDER BY c.Population DESC
+        """;
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            // Print table headers
+            System.out.printf("%-30s %-30s %-15s%n", "Capital Name", "Country", "Population");
+
+            // Iterate over results and print each capital city's data
+            while (rs.next()) {
+                String capitalName = rs.getString("CapitalName");
+                String countryName = rs.getString("CountryName");
+                int population = rs.getInt("Population");
+
+                System.out.printf("%-30s %-30s %-15d%n", capitalName, countryName, population);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
 
 
 }
