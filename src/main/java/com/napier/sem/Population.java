@@ -119,9 +119,13 @@ public class Population {
         // Retrieves and display the total population on the continent
         app.getPopulationOfContinent("Europe");
 
-        // Retrieve and display the total population in the region
+        // Retrieves and display the total population in the region
         app.getPopulationOfRegion("Eastern Europe");
 
+        // Retrieves and display the total population in the country
+        app.getPopulationOfCountry("Ukraine");
+
+        // Retrieves and display the total population in the district
 
         // Disconnect from the database
         app.disconnect();
@@ -1389,6 +1393,33 @@ public class Population {
         }
         System.out.println("");
 
+    }
+
+
+    /**
+     * Retrieves and displays the total population of a specified country.
+     * @param country The name of the country.
+     */
+    public void getPopulationOfCountry(String country) {
+        System.out.println("The total population of the country: " + country);
+        try {
+            // SQL query to fetch population of a specific country
+            String query = "SELECT Name, Population FROM world.country WHERE Name = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, country);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Display the result
+            if (rs.next()) {
+                System.out.printf("Country: %s, Population: %d%n", rs.getString("Name"), rs.getLong("Population"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
     }
 
 
