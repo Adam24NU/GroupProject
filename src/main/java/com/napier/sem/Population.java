@@ -131,6 +131,9 @@ public class Population {
         // Retrieves and display the total population in the city
         app.getPopulationOfCity("Oslo");
 
+        // Retrieves and display people who speak the exact language
+        app.getSpeakersByLanguage();
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -1477,6 +1480,53 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+
+
+    /**
+     * Retrieves and displays the number of people who speak specific languages
+     * (Chinese, English, Hindi, Spanish, Arabic) ordered by the number of speakers
+     * from greatest to smallest, including the percentage of the world population.
+     */
+    public void getSpeakersByLanguage() {
+        System.out.println("Number of people who speak specific languages, ordered from greatest to smallest:");
+        try {
+            // SQL query to calculate the speakers of specific languages and their percentage of the world population
+            String query = """
+            SELECT cl.Language,
+                   SUM(co.Population * cl.Percentage / 100) AS Speakers,
+                   (SUM(co.Population * cl.Percentage / 100) /
+                    (SELECT SUM(Population) FROM world.country) * 100) AS PercentageOfWorld
+            FROM world.country co
+            JOIN world.countrylanguage cl ON co.Code = cl.CountryCode
+            WHERE cl.Language IN ('Chinese', 'English', 'Hindi', 'Spanish', 'Arabic')
+            GROUP BY cl.Language
+            ORDER BY Speakers DESC
+        """;
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            // Print table headers
+            System.out.printf("%-15s %-20s %-20s%n", "Language", "Speakers", "Percentage of World");
+
+            // Iterate over results and print each language's data
+            while (rs.next()) {
+                String language = rs.getString("Language");
+                long speakers = rs.getLong("Speakers");
+                double percentage = rs.getDouble("PercentageOfWorld");
+
+                System.out.printf("%-15s %-20d %-20.2f%%%n", language, speakers, percentage);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+
 
 
 }
