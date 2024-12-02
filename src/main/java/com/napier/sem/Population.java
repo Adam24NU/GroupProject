@@ -116,6 +116,10 @@ public class Population {
         // Retrieves and display the total population of the world
         app.getPopulationOfWorld();
 
+        // Retrieves and display the total population on the continents
+        app.getPopulationOfContinent("Europe");
+
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -1331,6 +1335,33 @@ public class Population {
     }
 
 
+    /**
+     * Retrieves and displays the total population of a specified continent.
+     * @param continent The name of the continent.
+     */
+    public void getPopulationOfContinent(String continent) {
+        System.out.println("The total population of the continent: " + continent);
+        try {
+            // SQL query to calculate population of a specific continent
+            String query = "SELECT Continent, SUM(Population) AS ContinentPopulation " +
+                    "FROM world.country WHERE Continent = ? GROUP BY Continent";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, continent);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Display the result
+            if (rs.next()) {
+                long continentPopulation = rs.getLong("ContinentPopulation");
+                System.out.printf("Continent: %s, Population: %d%n", rs.getString("Continent"), continentPopulation);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
 
 
 
