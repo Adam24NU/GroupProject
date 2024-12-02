@@ -113,6 +113,9 @@ public class Population {
         // Retrieves and display the population of people, people living in cities, and people not living in cities in each country.
         app.getPopulationInCitiesAndNotInCitiesByCountry();
 
+        // Retrieves and display the total population of the world
+        app.getPopulationOfWorld();
+
         // Disconnect from the database
         app.disconnect();
     }
@@ -1300,6 +1303,34 @@ public class Population {
         System.out.println("");
         System.out.println("");
     }
+
+
+    /**
+     * Retrieves and displays the total population of the world.
+     */
+    public void getPopulationOfWorld() {
+        System.out.println("The total population of the world:");
+        try {
+            // SQL query to calculate the total world population
+            String query = "SELECT SUM(Population) AS WorldPopulation FROM world.country";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            // Display the result
+            if (rs.next()) {
+                long worldPopulation = rs.getLong("WorldPopulation");
+                System.out.printf("World Population: %d%n", worldPopulation);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+    }
+
+
 
 
 
