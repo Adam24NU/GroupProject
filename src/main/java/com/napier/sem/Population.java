@@ -116,8 +116,11 @@ public class Population {
         // Retrieves and display the total population of the world
         app.getPopulationOfWorld();
 
-        // Retrieves and display the total population on the continents
+        // Retrieves and display the total population on the continent
         app.getPopulationOfContinent("Europe");
+
+        // Retrieve and display the total population in the region
+        app.getPopulationOfRegion("Eastern Europe");
 
 
         // Disconnect from the database
@@ -1304,8 +1307,7 @@ public class Population {
         }
 
         System.out.println("");
-        System.out.println("");
-        System.out.println("");
+
     }
 
 
@@ -1330,8 +1332,7 @@ public class Population {
             e.printStackTrace();
         }
         System.out.println("");
-        System.out.println("");
-        System.out.println("");
+
     }
 
 
@@ -1359,10 +1360,36 @@ public class Population {
             e.printStackTrace();
         }
         System.out.println("");
-        System.out.println("");
-        System.out.println("");
+
     }
 
+
+    /**
+     * Retrieves and displays the total population of a specified region.
+     * @param region The name of the region.
+     */
+    public void getPopulationOfRegion(String region) {
+        System.out.println("The total population of the region: " + region);
+        try {
+            // SQL query to calculate population of a specific region
+            String query = "SELECT Region, SUM(Population) AS RegionPopulation " +
+                    "FROM world.country WHERE Region = ? GROUP BY Region";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, region);
+            ResultSet rs = pstmt.executeQuery();
+
+            // Display the result
+            if (rs.next()) {
+                long regionPopulation = rs.getLong("RegionPopulation");
+                System.out.printf("Region: %s, Population: %d%n", rs.getString("Region"), regionPopulation);
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed!");
+            e.printStackTrace();
+        }
+        System.out.println("");
+
+    }
 
 
 
