@@ -19,7 +19,7 @@
 #      MYSQL_DATABASE: world  # Database name
 
 
-version: '3'
+version: '3.8'
 services:
   app:
     build: .
@@ -45,3 +45,4 @@ services:
       interval: 10s
       retries: 5
       timeout: 5s
+
