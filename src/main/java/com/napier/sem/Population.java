@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.*;
-import java.util.concurrent.Callable;
+
 
 public class Population {
 
@@ -20,89 +20,89 @@ public class Population {
         app.connect(args);
 
         // Generate report for all countries ordered by population
-        app.getCountriesByPopulation();
+//        app.getCountriesByPopulation();
 
         // Generate report for all countries in a specific continent
-        app.getCountriesByContinentPopulation("Asia");
+//        app.getCountriesByContinentPopulation("Asia");
 
         // Generate report for all countries in a specific region
-        app.getCountriesByRegionPopulation("Western Europe");
+//        app.getCountriesByRegionPopulation("Western Europe");
 
         // Generate report for the top N populated countries in the world where N is provided by the user.
-        int N = 10; // Replace with user input if needed
-        app.getTopNPopulatedCountries(N);
+//        int N = 10; // Replace with user input if needed
+//        app.getTopNPopulatedCountries(N);
 
         // Retrieve the top N populated countries in a specified continent
-        int X = 5; // Replace with user input if needed
-        String continent = "Asia"; // Replace with user input if needed
-        app.getTopNPopulatedCountriesByContinent(continent, X);
+//        int X = 5; // Replace with user input if needed
+//        String continent = "Asia"; // Replace with user input if needed
+//        app.getTopNPopulatedCountriesByContinent(continent, X);
 
         // Retrieve the top N populated countries in a specified region
-        int Y = 5; // Replace with user input if needed
-        String region = "Eastern Europe"; // Replace with user input if needed
-        app.getTopNPopulatedCountriesByRegion(region, Y);
+//        int Y = 5; // Replace with user input if needed
+//        String region = "Eastern Europe"; // Replace with user input if needed
+//        app.getTopNPopulatedCountriesByRegion(region, Y);
 
         // Retrieve and display all cities in the world, sorted by population
-        app.getAllCitiesByPopulation();
+//        app.getAllCitiesByPopulation();
 
         // Retrieve and display all cities in a continent sorted by population
-        app.getCitiesByContinentPopulation("Asia");
+//        app.getCitiesByContinentPopulation("Asia");
 
         // Retrieve and display all cities in a region sorted by population
-        app.getCitiesByRegionPopulation("Eastern Europe");
+//        app.getCitiesByRegionPopulation("Eastern Europe");
 
         // Retrieve and display all cities in a country sorted by population
-        app.getCitiesByCountryPopulation("Ukraine");
+//        app.getCitiesByCountryPopulation("Ukraine");
 
         // Retrieve and display all cities in a district sorted by population
-        app.getCitiesByDistrictPopulation("California");
+//        app.getCitiesByDistrictPopulation("California");
 
         // Retrieve and display the top N populated cities in the world
-        int L = 5;
-        app.getTopNCitiesByPopulation(L);
+//        int L = 5;
+//        app.getTopNCitiesByPopulation(L);
 
         // Retrieve and display the top N populated cities in the continent
-        int M = 5; // Replace with user input if needed
-        String continent1 = "Asia"; // Replace with user input if needed
-        app.getTopNCitiesByContinentPopulation(M, continent1);
+//        int M = 5; // Replace with user input if needed
+//        String continent1 = "Asia"; // Replace with user input if needed
+//        app.getTopNCitiesByContinentPopulation(M, continent1);
 
         // Retrieve and display the top N populated cities in the region
-        int K = 5; // Replace with user input if needed
-        String region1 = "Eastern Europe"; // Replace with user input if needed
-        app.getTopNCitiesByRegionPopulation(K, region1);
+//        int K = 5; // Replace with user input if needed
+//        String region1 = "Eastern Europe"; // Replace with user input if needed
+//        app.getTopNCitiesByRegionPopulation(K, region1);
 
         // Retrieve and display the top N populated cities in the country
-        int P = 5;
-        String country = "Ukraine";
-        app.getTopNCitiesByCountryPopulation(P, country);
+//        int P = 5;
+//        String country = "Ukraine";
+//        app.getTopNCitiesByCountryPopulation(P, country);
 
         // Retrieve and display the top N populated cities in a district
-        int O = 3; // Replace with user input if needed
-        String district = "California"; // Replace with user input if needed
-        app.getTopNCitiesByDistrictPopulation(O, district);
+//        int O = 3; // Replace with user input if needed
+//        String district = "California"; // Replace with user input if needed
+//        app.getTopNCitiesByDistrictPopulation(O, district);
 
         // Retrieve and display the capital cities in the world organised by largest population to smallest.
-        app.getAllCapitalCitiesByPopulation();
+//        app.getAllCapitalCitiesByPopulation();
 
         // Retrieve and display the capital cities in a continent organised by largest population to smallest.
-        app.getCapitalCitiesByContinentPopulation(continent);
+//        app.getCapitalCitiesByContinentPopulation(continent);
 
         // Retrieve and display the capital cities in a region, organized by population from largest to smallest.
-        app.getCapitalCitiesByRegionPopulation(region);
+//        app.getCapitalCitiesByRegionPopulation(region);
 
         // Retrieve and display the top N populated capital cities in the world where N is provided by the user.
-        int G = 5; // You can change this value as needed
-        app.getTopNPopulatedCapitalCities(G); // Call the method to get the top N populated capital cities
+//        int G = 5; // You can change this value as needed
+//        app.getTopNPopulatedCapitalCities(G); // Call the method to get the top N populated capital cities
 
         // Retrieve and display the top N populated capital cities in a continent where N is provided by the user.
-        int T = 10; // You can change this value as needed
-        String continent2 = "Asia"; // You can change the continent as needed
-        app.getTopNPopulatedCapitalCitiesInContinent(T, continent2); // Call the method to get the top N populated capital cities in the specified continent
+//        int T = 10; // You can change this value as needed
+//        String continent2 = "Asia"; // You can change the continent as needed
+//        app.getTopNPopulatedCapitalCitiesInContinent(T, continent2); // Call the method to get the top N populated capital cities in the specified continent
 
         // Retrieve and display the top N populated capital cities in a region where N is provided by the user.
-        int I = 10; // You can change this value as needed
-        String region2 = "Eastern Europe"; // You can change the continent as needed
-        app.getTopNPopulatedCapitalCitiesInRegion(I, region2);
+//        int I = 10; // You can change this value as needed
+//        String region2 = "Eastern Europe"; // You can change the continent as needed
+//        app.getTopNPopulatedCapitalCitiesInRegion(I, region2);
 
         // Retrieves and display the population of people, people living in cities, and people not living in cities in each continent.
         app.getPopulationInCitiesAndNotInCitiesByContinent();
@@ -208,7 +208,6 @@ public class Population {
             * Getter method for the database connection.
      * This method is added specifically to facilitate unit testing by allowing the connection to be mocked.
             * It returns the current connection to the database.
-            *
             * Note to collaborators: This modification was made for testing purposes to mock the database connection.
      */
     public Connection getDatabaseConnection() {
@@ -245,9 +244,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -283,9 +282,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -321,9 +320,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -360,9 +359,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -406,9 +405,9 @@ public class Population {
             e.printStackTrace();
         }
 
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -451,9 +450,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -490,9 +489,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -535,9 +534,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -580,9 +579,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -625,9 +624,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -669,9 +668,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
     /**
      * Retrieves and displays the top N populated cities in the world, where N is provided as a command-line argument.
@@ -712,9 +711,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -760,9 +759,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
     /**
      * Retrieves and displays the top K populated cities in a specified region, where N is provided by the user.
@@ -807,9 +806,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -855,9 +854,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -902,9 +901,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -942,9 +941,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
 
@@ -989,9 +988,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -1034,9 +1033,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
 
@@ -1080,9 +1079,9 @@ public class Population {
             e.printStackTrace();
         }
 
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
 
@@ -1129,9 +1128,9 @@ public class Population {
             e.printStackTrace();
         }
 
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
@@ -1177,16 +1176,15 @@ public class Population {
             e.printStackTrace();
         }
 
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
      * This method calculates the total population of people, the population living in cities,
      * and the population not living in cities for each continent.
      * It queries the 'world' database and outputs the results in a formatted table.
-     *
      * The result includes the continent name, total population, the population living in cities,
      * and the population not living in cities.
      */
@@ -1228,16 +1226,15 @@ public class Population {
             e.printStackTrace();
         }
 
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /**
      * This method calculates the total population of people, the population living in cities,
      * and the population not living in cities for each region.
      * It queries the 'world' database and outputs the results in a formatted table.
-     *
      * The result includes the region name, total population, the population living in cities,
      * and the population not living in cities for each region.
      */
@@ -1279,9 +1276,9 @@ public class Population {
             e.printStackTrace();
         }
 
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
 
@@ -1289,7 +1286,6 @@ public class Population {
      * This method calculates the total population of people, the population living in cities,
      * and the population not living in cities for each country.
      * It queries the 'world' database and outputs the results in a formatted table.
-     *
      * The result includes the country name, total population, the population living in cities,
      * and the population not living in cities for each country.
      */
@@ -1331,7 +1327,8 @@ public class Population {
             e.printStackTrace();
         }
 
-        System.out.println("");
+        System.out.println();
+
 
     }
 
@@ -1356,7 +1353,7 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
+        System.out.println();
 
     }
 
@@ -1384,7 +1381,7 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
+        System.out.println();
 
     }
 
@@ -1412,7 +1409,7 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
+        System.out.println();
 
     }
 
@@ -1438,7 +1435,7 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
+        System.out.println();
 
     }
 
@@ -1464,7 +1461,7 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
+        System.out.println();
 
     }
 
@@ -1490,8 +1487,8 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
 
     }
 
@@ -1536,12 +1533,10 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
-
-
 
     /**
      * Generates a country report displaying the code, name, continent, region, population, and capital.
@@ -1551,7 +1546,7 @@ public class Population {
         try {
             // SQL query to fetch the required country data
             String query = """
-            SELECT Code, Name, Continent, Region, Population, 
+            SELECT Code, Name, Continent, Region, Population,
                    (SELECT Name FROM world.city WHERE ID = co.Capital) AS CapitalName
             FROM world.country co
             ORDER BY Population DESC
@@ -1581,9 +1576,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
 
@@ -1595,9 +1590,9 @@ public class Population {
         try {
             // SQL query to retrieve city details
             String query = """
-        SELECT c.Name AS CityName, 
-               co.Name AS CountryName, 
-               c.District, 
+        SELECT c.Name AS CityName,
+               co.Name AS CountryName,
+               c.District,
                c.Population
         FROM world.city c
         JOIN world.country co ON c.CountryCode = co.Code
@@ -1623,9 +1618,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /*
@@ -1636,8 +1631,8 @@ public class Population {
         try {
             // SQL query to retrieve capital city details
             String query = """
-        SELECT c.Name AS CapitalName, 
-               co.Name AS CountryName, 
+        SELECT c.Name AS CapitalName,
+               co.Name AS CountryName,
                c.Population
         FROM world.country co
         JOIN world.city c ON co.Capital = c.ID
@@ -1662,9 +1657,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     /*
@@ -1719,9 +1714,9 @@ public class Population {
             System.out.println("Query failed!");
             e.printStackTrace();
         }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
 
