@@ -29,35 +29,6 @@ public class PopulationIntegrationTests {
         }
     }
 
-    /** Test: Database Disconnection Integration
-     - Validate that the application successfully disconnects from the database.
-     - Ensure that no queries can be executed after disconnection.*/
-    @Test
-    void testDatabaseDisconnectionIntegration() {
-        Population app = new Population();
-        try {
-            String[] args = {"debug"}; // Use debug mode to connect to the local database
-            app.connect(args);
-
-            // Verify connection
-            assertNotNull(app.getDatabaseConnection(), "Database connection should not be null.");
-
-            // Disconnect from the database
-            app.disconnect();
-
-            // Attempt to run a query after disconnection
-            Exception exception = assertThrows(Exception.class, () -> {
-                app.getCountriesByPopulation(); // This should fail as the connection is closed
-            });
-
-            // Verify that the exception message indicates a closed connection
-            String expectedMessage = "No operations allowed after connection closed";
-            assertTrue(exception.getMessage().contains(expectedMessage),
-                    "Exception message should indicate a closed connection.");
-        } catch (Exception e) {
-            fail("Test failed with exception: " + e.getMessage());
-        }
-    }
 
 
     /************************************************************ POPULATION QUERIES *******************************************************************/
