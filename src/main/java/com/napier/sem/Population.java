@@ -204,11 +204,10 @@ public class Population {
             }
         }
     }
-    /**
-            * Getter method for the database connection.
+    /*** Getter method for the database connection.
      * This method is added specifically to facilitate unit testing by allowing the connection to be mocked.
-            * It returns the current connection to the database.
-            * Note to collaborators: This modification was made for testing purposes to mock the database connection.
+     * It returns the current connection to the database.
+     * Note to collaborators: This modification was made for testing purposes to mock the database connection.
      */
     public Connection getDatabaseConnection() {
         return con; // Return the current database connection
