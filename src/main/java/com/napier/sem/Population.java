@@ -20,13 +20,13 @@ public class Population {
         app.connect(args);
 
         // Generate report for all countries ordered by population
-//        app.getCountriesByPopulation();
+        app.getCountriesByPopulation();
 
         // Generate report for all countries in a specific continent
-//        app.getCountriesByContinentPopulation("Asia");
+        app.getCountriesByContinentPopulation("Asia");
 
         // Generate report for all countries in a specific region
-//        app.getCountriesByRegionPopulation("Western Europe");
+        app.getCountriesByRegionPopulation("Western Europe");
 
         // Generate report for the top N populated countries in the world where N is provided by the user.
 //        int N = 10; // Replace with user input if needed
@@ -103,50 +103,50 @@ public class Population {
 //        int I = 10; // You can change this value as needed
 //        String region2 = "Eastern Europe"; // You can change the continent as needed
 //        app.getTopNPopulatedCapitalCitiesInRegion(I, region2);
-
-        // Retrieves and display the population of people, people living in cities, and people not living in cities in each continent.
-        app.getPopulationInCitiesAndNotInCitiesByContinent();
-
-        // Retrieves and display the population of people, people living in cities, and people not living in cities in each region.
-        app.getPopulationInCitiesAndNotInCitiesByRegion();
-
-        // Retrieves and display the population of people, people living in cities, and people not living in cities in each country.
-        app.getPopulationInCitiesAndNotInCitiesByCountry();
-
-        // Retrieves and display the total population of the world
-        app.getPopulationOfWorld();
-
-        // Retrieves and display the total population on the continent
-        app.getPopulationOfContinent("Europe");
-
-        // Retrieves and display the total population in the region
-        app.getPopulationOfRegion("Eastern Europe");
-
-        // Retrieves and display the total population in the country
-        app.getPopulationOfCountry("Ukraine");
-
-        // Retrieves and display the total population in the district
-        app.getPopulationOfDistrict("California");
-
-        // Retrieves and display the total population in the city
-        app.getPopulationOfCity("Oslo");
-
-        // Retrieves and display people who speak the exact language
-        app.getSpeakersByLanguage();
-
-        // Country report
-        app.getCountryReport();
-
-        // City report
-        app.getCityReport();
-
-        // Capital City Report
-        app.getCapitalCityReport();
-
-        // Population Report
-        app.getPopulationReport("continent");
-        app.getPopulationReport("region");
-        app.getPopulationReport("country");
+//
+//        // Retrieves and display the population of people, people living in cities, and people not living in cities in each continent.
+//        app.getPopulationInCitiesAndNotInCitiesByContinent();
+//
+//        // Retrieves and display the population of people, people living in cities, and people not living in cities in each region.
+//        app.getPopulationInCitiesAndNotInCitiesByRegion();
+//
+//        // Retrieves and display the population of people, people living in cities, and people not living in cities in each country.
+//        app.getPopulationInCitiesAndNotInCitiesByCountry();
+//
+//        // Retrieves and display the total population of the world
+//        app.getPopulationOfWorld();
+//
+//        // Retrieves and display the total population on the continent
+//        app.getPopulationOfContinent("Europe");
+//
+//        // Retrieves and display the total population in the region
+//        app.getPopulationOfRegion("Eastern Europe");
+//
+//        // Retrieves and display the total population in the country
+//        app.getPopulationOfCountry("Ukraine");
+//
+//        // Retrieves and display the total population in the district
+//        app.getPopulationOfDistrict("California");
+//
+//        // Retrieves and display the total population in the city
+//        app.getPopulationOfCity("Oslo");
+//
+//        // Retrieves and display people who speak the exact language
+//        app.getSpeakersByLanguage();
+//
+//        // Country report
+//        app.getCountryReport();
+//
+//        // City report
+//        app.getCityReport();
+//
+//        // Capital City Report
+//        app.getCapitalCityReport();
+//
+//        // Population Report
+//        app.getPopulationReport("continent");
+//        app.getPopulationReport("region");
+//        app.getPopulationReport("country");
 
         // Disconnect from the database
         app.disconnect();
