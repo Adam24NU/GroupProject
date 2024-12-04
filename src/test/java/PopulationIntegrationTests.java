@@ -10,26 +10,50 @@ public class PopulationIntegrationTests {
     @Test
     void testDatabaseConnectionAndSimpleQuery() {
         Population app = new Population();
+        long connectionStartTime, connectionEndTime, queryStartTime, queryEndTime;
+        boolean connectionSuccessful = false;
+        boolean querySuccessful = false;
+
         try {
             String[] args = {"debug"}; // Use debug mode to connect to local database
+            // Measure connection time
+            connectionStartTime = System.currentTimeMillis();
             app.connect(args);
+            connectionEndTime = System.currentTimeMillis();
+            connectionSuccessful = app.getDatabaseConnection() != null;
 
-            // Verify connection
             assertNotNull(app.getDatabaseConnection(), "Database connection should not be null.");
+            System.out.println("Connection established successfully.");
+            System.out.println("Connection Time: " + (connectionEndTime - connectionStartTime) + " ms");
 
-            // Run a basic query (e.g., getCountriesByPopulation)
+            // Measure query execution time
+            queryStartTime = System.currentTimeMillis();
             app.getCountriesByPopulation();
+            queryEndTime = System.currentTimeMillis();
+            querySuccessful = true;
 
-            // If no exception occurs, the integration is working
+            System.out.println("Query executed successfully.");
+            System.out.println("Query Execution Time: " + (queryEndTime - queryStartTime) + " ms");
+
+            // If no exceptions occur, the integration is working
             assertTrue(true, "getCountriesByPopulation executed without errors.");
         } catch (Exception e) {
+            System.err.println("Test failed: " + e.getMessage());
             fail("Integration test failed: " + e.getMessage());
         } finally {
+            // Disconnection is part of the test flow
+            long disconnectionStartTime = System.currentTimeMillis();
             app.disconnect();
+            long disconnectionEndTime = System.currentTimeMillis();
+            System.out.println("Disconnection Time: " + (disconnectionEndTime - disconnectionStartTime) + " ms");
         }
+
+        // Print metrics
+        System.out.println("Test Metrics:");
+        System.out.println("Connection Successful: " + connectionSuccessful);
+        System.out.println("Query Successful: " + querySuccessful);
     }
-
-
+    
 
     /************************************************************ POPULATION QUERIES *******************************************************************/
     /** Test: Retrieve the total population of the world
