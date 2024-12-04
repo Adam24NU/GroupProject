@@ -1,9 +1,10 @@
+
 name: Multi-Job Workflow for World and Hello World Apps
 on: push
 
 jobs:
   build_and_test:
-    name: Build and Test Application with Database
+    name: Build, Test, and Run Application with Database
     runs-on: ubuntu-20.04
 
     steps:
@@ -24,6 +25,14 @@ jobs:
       - name: Build Application with Maven
         run: mvn package
 
-      # Step 4: Build and run the application and database with Docker Compose
+      # Step 4: Run Unit Tests
+      - name: Run Unit Tests
+        run: mvn test
+
+      # Step 5: Run Integration Tests
+      - name: Run Integration Tests
+        run: mvn verify
+
+      # Step 6: Build and run the application and database with Docker Compose
       - name: Run Docker Compose
         run: docker compose up --build --abort-on-container-exit
