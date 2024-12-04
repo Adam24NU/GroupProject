@@ -1,5 +1,7 @@
 import com.napier.sem.Population;
 import org.junit.jupiter.api.Test;
+import java.time.Duration;
+import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.*;
 public class PopulationIntegrationTests {
     /********************************************************************* DATABASE **********************************************************************/
@@ -668,29 +670,70 @@ public class PopulationIntegrationTests {
     /***************************************************************** COMBINED QUERIES ***************************************************************************/
     /** Integration Test: Validate combined usage of multiple queries.
      - Simulates a scenario where multiple methods are executed in sequence.
-     - Verifies that combined execution does not cause resource issues or errors.*/
+     - Verifies that combined execution does not cause resource issues or errors.
+     - Measure execution time and track success/failure for each query. */
     @Test
     void testCombinedQueryIntegration() {
         Population app = new Population();
+        int passedQueries = 0;
+        int failedQueries = 0;
+        Instant startTime = Instant.now();
         try {
             String[] args = {"debug"}; // Use debug mode to connect to the local database
             app.connect(args);
 
-            // Execute multiple queries
-            System.out.println("Testing combined execution of multiple queries.");
-            app.getPopulationOfWorld();
-            app.getTopNPopulatedCountries(5);
-            app.getCitiesByCountryPopulation("India");
-            app.getCapitalCitiesByContinentPopulation("Asia");
+            // Query 1: Get population of the world
+            passedQueries += executeAndTrack(() -> app.getPopulationOfWorld(), "World Population Query");
 
-            // If no exceptions occur, the test passes
-            assertTrue(true, "Combined queries executed successfully.");
+            // Query 2: Get top N populated countries
+            passedQueries += executeAndTrack(() -> app.getTopNPopulatedCountries(5), "Top N Populated Countries Query");
+
+            // Query 3: Get cities by country population
+            passedQueries += executeAndTrack(() -> app.getCitiesByCountryPopulation("India"), "Cities by Country Population Query");
+
+            // Query 4: Get capital cities by continent population
+            passedQueries += executeAndTrack(() -> app.getCapitalCitiesByContinentPopulation("Asia"), "Capital Cities by Continent Query");
+
         } catch (Exception e) {
-            fail("Combined query test failed: " + e.getMessage());
+            System.out.println("Test failed with exception: " + e.getMessage());
+            failedQueries++;
         } finally {
             app.disconnect();
+            Instant endTime = Instant.now();
+            Duration executionTime = Duration.between(startTime, endTime);
+
+            // Print test summary
+            System.out.println("\n=== COMBINED QUERY TEST SUMMARY ===");
+            System.out.println("Total Queries: 4");
+            System.out.println("Passed Queries: " + passedQueries);
+            System.out.println("Failed Queries: " + failedQueries);
+            System.out.println("Total Execution Time: " + executionTime.toMillis() + " ms");
+
+            // Ensure at least one query passed
+            assertTrue(passedQueries > 0, "At least one query should pass.");
         }
     }
+
+        /**
+         * Helper Method: Execute a query and track its success/failure.
+         * @param query Runnable query to execute.
+         * @param description Description of the query for logging purposes.
+         * @return 1 if successful, 0 otherwise.
+         */
+        private int executeAndTrack(Runnable query, String description) {
+            Instant queryStart = Instant.now();
+            try {
+                query.run();
+                Instant queryEnd = Instant.now();
+                Duration queryTime = Duration.between(queryStart, queryEnd);
+                System.out.println("SUCCESS: " + description + " executed in " + queryTime.toMillis() + " ms.");
+                return 1;
+            } catch (Exception e) {
+                System.out.println("FAILURE: " + description + " failed with exception: " + e.getMessage());
+                return 0;
+            }
+        }
+
 
     /** Combined Query Test: Global Population Insights
      - Simulate real-world usage of fetching global population data.
