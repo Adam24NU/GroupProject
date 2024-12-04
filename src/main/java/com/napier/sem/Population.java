@@ -28,125 +28,125 @@ public class Population {
         // Generate report for all countries in a specific region
         app.getCountriesByRegionPopulation("Western Europe");
 
-        // Generate report for the top N populated countries in the world where N is provided by the user.
-//        int N = 10; // Replace with user input if needed
-//        app.getTopNPopulatedCountries(N);
+//         Generate report for the top N populated countries in the world where N is provided by the user.
+        int N = 10; // Replace with user input if needed
+        app.getTopNPopulatedCountries(N);
 
-        // Retrieve the top N populated countries in a specified continent
-//        int X = 5; // Replace with user input if needed
-//        String continent = "Asia"; // Replace with user input if needed
-//        app.getTopNPopulatedCountriesByContinent(continent, X);
+//         Retrieve the top N populated countries in a specified continent
+        int X = 5; // Replace with user input if needed
+        String continent = "Asia"; // Replace with user input if needed
+        app.getTopNPopulatedCountriesByContinent(continent, X);
 
-        // Retrieve the top N populated countries in a specified region
-//        int Y = 5; // Replace with user input if needed
-//        String region = "Eastern Europe"; // Replace with user input if needed
-//        app.getTopNPopulatedCountriesByRegion(region, Y);
+//         Retrieve the top N populated countries in a specified region
+        int Y = 5; // Replace with user input if needed
+        String region = "Eastern Europe"; // Replace with user input if needed
+        app.getTopNPopulatedCountriesByRegion(region, Y);
 
-        // Retrieve and display all cities in the world, sorted by population
-//        app.getAllCitiesByPopulation();
+//         Retrieve and display all cities in the world, sorted by population
+        app.getAllCitiesByPopulation();
 
-        // Retrieve and display all cities in a continent sorted by population
-//        app.getCitiesByContinentPopulation("Asia");
+//         Retrieve and display all cities in a continent sorted by population
+        app.getCitiesByContinentPopulation("Asia");
 
-        // Retrieve and display all cities in a region sorted by population
-//        app.getCitiesByRegionPopulation("Eastern Europe");
+//         Retrieve and display all cities in a region sorted by population
+        app.getCitiesByRegionPopulation("Eastern Europe");
 
-        // Retrieve and display all cities in a country sorted by population
-//        app.getCitiesByCountryPopulation("Ukraine");
+//         Retrieve and display all cities in a country sorted by population
+        app.getCitiesByCountryPopulation("Ukraine");
 
-        // Retrieve and display all cities in a district sorted by population
-//        app.getCitiesByDistrictPopulation("California");
+//         Retrieve and display all cities in a district sorted by population
+        app.getCitiesByDistrictPopulation("California");
 
-        // Retrieve and display the top N populated cities in the world
-//        int L = 5;
-//        app.getTopNCitiesByPopulation(L);
+//         Retrieve and display the top N populated cities in the world
+        int L = 5;
+        app.getTopNCitiesByPopulation(L);
 
-        // Retrieve and display the top N populated cities in the continent
-//        int M = 5; // Replace with user input if needed
-//        String continent1 = "Asia"; // Replace with user input if needed
-//        app.getTopNCitiesByContinentPopulation(M, continent1);
+//         Retrieve and display the top N populated cities in the continent
+        int M = 5; // Replace with user input if needed
+        String continent1 = "Asia"; // Replace with user input if needed
+        app.getTopNCitiesByContinentPopulation(M, continent1);
 
-        // Retrieve and display the top N populated cities in the region
-//        int K = 5; // Replace with user input if needed
-//        String region1 = "Eastern Europe"; // Replace with user input if needed
-//        app.getTopNCitiesByRegionPopulation(K, region1);
+//         Retrieve and display the top N populated cities in the region
+        int K = 5; // Replace with user input if needed
+        String region1 = "Eastern Europe"; // Replace with user input if needed
+        app.getTopNCitiesByRegionPopulation(K, region1);
 
-        // Retrieve and display the top N populated cities in the country
-//        int P = 5;
-//        String country = "Ukraine";
-//        app.getTopNCitiesByCountryPopulation(P, country);
+//         Retrieve and display the top N populated cities in the country
+        int P = 5;
+        String country = "Ukraine";
+        app.getTopNCitiesByCountryPopulation(P, country);
 
-        // Retrieve and display the top N populated cities in a district
-//        int O = 3; // Replace with user input if needed
-//        String district = "California"; // Replace with user input if needed
-//        app.getTopNCitiesByDistrictPopulation(O, district);
+//         Retrieve and display the top N populated cities in a district
+        int O = 3; // Replace with user input if needed
+        String district = "California"; // Replace with user input if needed
+        app.getTopNCitiesByDistrictPopulation(O, district);
 
-        // Retrieve and display the capital cities in the world organised by largest population to smallest.
-//        app.getAllCapitalCitiesByPopulation();
+//         Retrieve and display the capital cities in the world organised by largest population to smallest.
+        app.getAllCapitalCitiesByPopulation();
 
-        // Retrieve and display the capital cities in a continent organised by largest population to smallest.
-//        app.getCapitalCitiesByContinentPopulation(continent);
+//         Retrieve and display the capital cities in a continent organised by largest population to smallest.
+        app.getCapitalCitiesByContinentPopulation(continent);
 
-        // Retrieve and display the capital cities in a region, organized by population from largest to smallest.
-//        app.getCapitalCitiesByRegionPopulation(region);
+//         Retrieve and display the capital cities in a region, organized by population from largest to smallest.
+        app.getCapitalCitiesByRegionPopulation(region);
 
-        // Retrieve and display the top N populated capital cities in the world where N is provided by the user.
-//        int G = 5; // You can change this value as needed
-//        app.getTopNPopulatedCapitalCities(G); // Call the method to get the top N populated capital cities
+//         Retrieve and display the top N populated capital cities in the world where N is provided by the user.
+        int G = 5; // You can change this value as needed
+        app.getTopNPopulatedCapitalCities(G); // Call the method to get the top N populated capital cities
 
-        // Retrieve and display the top N populated capital cities in a continent where N is provided by the user.
-//        int T = 10; // You can change this value as needed
-//        String continent2 = "Asia"; // You can change the continent as needed
-//        app.getTopNPopulatedCapitalCitiesInContinent(T, continent2); // Call the method to get the top N populated capital cities in the specified continent
+//         Retrieve and display the top N populated capital cities in a continent where N is provided by the user.
+        int T = 10; // You can change this value as needed
+        String continent2 = "Asia"; // You can change the continent as needed
+        app.getTopNPopulatedCapitalCitiesInContinent(T, continent2); // Call the method to get the top N populated capital cities in the specified continent
 
-        // Retrieve and display the top N populated capital cities in a region where N is provided by the user.
-//        int I = 10; // You can change this value as needed
-//        String region2 = "Eastern Europe"; // You can change the continent as needed
-//        app.getTopNPopulatedCapitalCitiesInRegion(I, region2);
-//
-//        // Retrieves and display the population of people, people living in cities, and people not living in cities in each continent.
-//        app.getPopulationInCitiesAndNotInCitiesByContinent();
-//
-//        // Retrieves and display the population of people, people living in cities, and people not living in cities in each region.
-//        app.getPopulationInCitiesAndNotInCitiesByRegion();
-//
-//        // Retrieves and display the population of people, people living in cities, and people not living in cities in each country.
-//        app.getPopulationInCitiesAndNotInCitiesByCountry();
-//
-//        // Retrieves and display the total population of the world
-//        app.getPopulationOfWorld();
-//
-//        // Retrieves and display the total population on the continent
-//        app.getPopulationOfContinent("Europe");
-//
-//        // Retrieves and display the total population in the region
-//        app.getPopulationOfRegion("Eastern Europe");
-//
-//        // Retrieves and display the total population in the country
-//        app.getPopulationOfCountry("Ukraine");
-//
-//        // Retrieves and display the total population in the district
-//        app.getPopulationOfDistrict("California");
-//
-//        // Retrieves and display the total population in the city
-//        app.getPopulationOfCity("Oslo");
-//
-//        // Retrieves and display people who speak the exact language
-//        app.getSpeakersByLanguage();
-//
-//        // Country report
-//        app.getCountryReport();
-//
-//        // City report
-//        app.getCityReport();
-//
-//        // Capital City Report
-//        app.getCapitalCityReport();
-//
-//        // Population Report
-//        app.getPopulationReport("continent");
-//        app.getPopulationReport("region");
-//        app.getPopulationReport("country");
+//         Retrieve and display the top N populated capital cities in a region where N is provided by the user.
+        int I = 10; // You can change this value as needed
+        String region2 = "Eastern Europe"; // You can change the continent as needed
+        app.getTopNPopulatedCapitalCitiesInRegion(I, region2);
+
+        // Retrieves and display the population of people, people living in cities, and people not living in cities in each continent.
+        app.getPopulationInCitiesAndNotInCitiesByContinent();
+
+        // Retrieves and display the population of people, people living in cities, and people not living in cities in each region.
+        app.getPopulationInCitiesAndNotInCitiesByRegion();
+
+        // Retrieves and display the population of people, people living in cities, and people not living in cities in each country.
+        app.getPopulationInCitiesAndNotInCitiesByCountry();
+
+        // Retrieves and display the total population of the world
+        app.getPopulationOfWorld();
+
+        // Retrieves and display the total population on the continent
+        app.getPopulationOfContinent("Europe");
+
+        // Retrieves and display the total population in the region
+        app.getPopulationOfRegion("Eastern Europe");
+
+        // Retrieves and display the total population in the country
+        app.getPopulationOfCountry("Ukraine");
+
+        // Retrieves and display the total population in the district
+        app.getPopulationOfDistrict("California");
+
+        // Retrieves and display the total population in the city
+        app.getPopulationOfCity("Oslo");
+
+        // Retrieves and display people who speak the exact language
+        app.getSpeakersByLanguage();
+
+        // Country report
+        app.getCountryReport();
+
+        // City report
+        app.getCityReport();
+
+        // Capital City Report
+        app.getCapitalCityReport();
+
+        // Population Report
+        app.getPopulationReport("continent");
+        app.getPopulationReport("region");
+        app.getPopulationReport("country");
 
         // Disconnect from the database
         app.disconnect();
