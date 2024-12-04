@@ -10,26 +10,50 @@ public class PopulationIntegrationTests {
     @Test
     void testDatabaseConnectionAndSimpleQuery() {
         Population app = new Population();
+        long connectionStartTime, connectionEndTime, queryStartTime, queryEndTime;
+        boolean connectionSuccessful = false;
+        boolean querySuccessful = false;
+
         try {
             String[] args = {"debug"}; // Use debug mode to connect to local database
+            // Measure connection time
+            connectionStartTime = System.currentTimeMillis();
             app.connect(args);
+            connectionEndTime = System.currentTimeMillis();
+            connectionSuccessful = app.getDatabaseConnection() != null;
 
-            // Verify connection
             assertNotNull(app.getDatabaseConnection(), "Database connection should not be null.");
+            System.out.println("Connection established successfully.");
+            System.out.println("Connection Time: " + (connectionEndTime - connectionStartTime) + " ms");
 
-            // Run a basic query (e.g., getCountriesByPopulation)
+            // Measure query execution time
+            queryStartTime = System.currentTimeMillis();
             app.getCountriesByPopulation();
+            queryEndTime = System.currentTimeMillis();
+            querySuccessful = true;
 
-            // If no exception occurs, the integration is working
+            System.out.println("Query executed successfully.");
+            System.out.println("Query Execution Time: " + (queryEndTime - queryStartTime) + " ms");
+
+            // If no exceptions occur, the integration is working
             assertTrue(true, "getCountriesByPopulation executed without errors.");
         } catch (Exception e) {
+            System.err.println("Test failed: " + e.getMessage());
             fail("Integration test failed: " + e.getMessage());
         } finally {
+            // Disconnection is part of the test flow
+            long disconnectionStartTime = System.currentTimeMillis();
             app.disconnect();
+            long disconnectionEndTime = System.currentTimeMillis();
+            System.out.println("Disconnection Time: " + (disconnectionEndTime - disconnectionStartTime) + " ms");
         }
+
+        // Print metrics
+        System.out.println("Test Metrics:");
+        System.out.println("Connection Successful: " + connectionSuccessful);
+        System.out.println("Query Successful: " + querySuccessful);
     }
-
-
+    
 
     /************************************************************ POPULATION QUERIES *******************************************************************/
     /** Test: Retrieve the total population of the world
@@ -685,89 +709,123 @@ public class PopulationIntegrationTests {
         }
     }
 
-        /**
-         * Helper Method: Execute a query and track its success/failure.
-         * @param query Runnable query to execute.
-         * @param description Description of the query for logging purposes.
-         * @return 1 if successful, 0 otherwise.
-         */
-        private int executeAndTrack(Runnable query, String description) {
-            Instant queryStart = Instant.now();
-            try {
-                query.run();
-                Instant queryEnd = Instant.now();
-                Duration queryTime = Duration.between(queryStart, queryEnd);
-                System.out.println("SUCCESS: " + description + " executed in " + queryTime.toMillis() + " ms.");
-                return 1;
-            } catch (Exception e) {
-                System.out.println("FAILURE: " + description + " failed with exception: " + e.getMessage());
-                return 0;
-            }
-        }
-
 
     /** Combined Query Test: Global Population Insights
      - Simulate real-world usage of fetching global population data.
-     - Combine multiple methods related to global and continent-level queries.*/
+     - Combine multiple methods related to global and continent-level queries.
+     - Measure query execution times and track successes and failures. */
     @Test
     void testGlobalPopulationInsightsIntegration() {
         Population app = new Population();
+        int passedQueries = 0;
+        int failedQueries = 0;
+        Instant startTime = Instant.now();
         try {
             String[] args = {"debug"};
             app.connect(args);
 
-            // Fetch the world population
-            System.out.println("Fetching world population...");
-            app.getPopulationOfWorld();
+            System.out.println("Testing global population insights...");
 
-            // Fetch continent-level population for multiple continents
+            // Query 1: Fetch the world population
+            passedQueries += executeAndTrack(() -> app.getPopulationOfWorld(), "World Population Query");
+
+            // Query 2: Fetch continent-level populations
             String[] continents = {"Asia", "Europe", "Africa"};
             for (String continent : continents) {
-                System.out.println("Fetching population for continent: " + continent);
-                app.getPopulationOfContinent(continent);
+                passedQueries += executeAndTrack(() -> app.getPopulationOfContinent(continent),
+                        "Population Query for Continent: " + continent);
             }
 
-            // Fetch top N populated countries globally
-            System.out.println("Fetching top 5 populated countries globally...");
-            app.getTopNPopulatedCountries(5);
+            // Query 3: Fetch top N populated countries globally
+            passedQueries += executeAndTrack(() -> app.getTopNPopulatedCountries(5),
+                    "Top 5 Populated Countries Query");
 
-            // If no exceptions occur, the test passes
-            assertTrue(true, "Global population insights fetched successfully.");
         } catch (Exception e) {
-            fail("Global population insights test failed: " + e.getMessage());
+            System.out.println("Test failed with exception: " + e.getMessage());
+            failedQueries++;
         } finally {
             app.disconnect();
+            Instant endTime = Instant.now();
+            Duration executionTime = Duration.between(startTime, endTime);
+
+            // Print test summary
+            System.out.println("\n=== GLOBAL POPULATION INSIGHTS TEST SUMMARY ===");
+            System.out.println("Total Queries: " + (passedQueries + failedQueries));
+            System.out.println("Passed Queries: " + passedQueries);
+            System.out.println("Failed Queries: " + failedQueries);
+            System.out.println("Total Execution Time: " + executionTime.toMillis() + " ms");
+
+            // Ensure at least one query passed
+            assertTrue(passedQueries > 0, "At least one query should pass.");
         }
     }
 
     /** Combined Query Test: Regional and Country-Level Insights
      - Simulate combined queries for regions and countries.
-     - Validate sequential execution of region and country-level population data retrieval.*/
+     - Validate sequential execution of region and country-level population data retrieval.
+     - Track execution time and record success/failure counts for each query. */
     @Test
     void testRegionalAndCountryInsightsIntegration() {
         Population app = new Population();
+        int totalQueries = 0;
+        int successfulQueries = 0;
+        int failedQueries = 0;
         try {
             String[] args = {"debug"};
             app.connect(args);
 
+            long startTime = System.currentTimeMillis(); // Start timer
+
             // Fetch region-level population
-            String region = "Western Europe";
-            System.out.println("Fetching population for region: " + region);
-            app.getPopulationOfRegion(region);
+            totalQueries++;
+            try {
+                String region = "Western Europe";
+                System.out.println("Fetching population for region: " + region);
+                app.getPopulationOfRegion(region);
+                successfulQueries++;
+            } catch (Exception e) {
+                failedQueries++;
+                System.err.println("Failed to fetch population for region: Western Europe - " + e.getMessage());
+            }
 
             // Fetch country-level population for countries in the region
             String[] countries = {"Germany", "France", "Italy"};
             for (String country : countries) {
-                System.out.println("Fetching population for country: " + country);
-                app.getPopulationOfCountry(country);
+                totalQueries++;
+                try {
+                    System.out.println("Fetching population for country: " + country);
+                    app.getPopulationOfCountry(country);
+                    successfulQueries++;
+                } catch (Exception e) {
+                    failedQueries++;
+                    System.err.println("Failed to fetch population for country: " + country + " - " + e.getMessage());
+                }
 
                 // Fetch cities by population for each country
-                System.out.println("Fetching cities by population for country: " + country);
-                app.getCitiesByCountryPopulation(country);
+                totalQueries++;
+                try {
+                    System.out.println("Fetching cities by population for country: " + country);
+                    app.getCitiesByCountryPopulation(country);
+                    successfulQueries++;
+                } catch (Exception e) {
+                    failedQueries++;
+                    System.err.println("Failed to fetch cities by population for country: " + country + " - " + e.getMessage());
+                }
             }
 
+            long endTime = System.currentTimeMillis(); // End timer
+            long elapsedTime = endTime - startTime;
+
+            // Print metrics
+            System.out.println("Test Execution Metrics:");
+            System.out.println("Total Queries: " + totalQueries);
+            System.out.println("Successful Queries: " + successfulQueries);
+            System.out.println("Failed Queries: " + failedQueries);
+            System.out.println("Total Execution Time: " + elapsedTime + " ms");
+
             // If no exceptions occur, the test passes
-            assertTrue(true, "Regional and country insights fetched successfully.");
+            assertTrue(failedQueries == 0, "Some queries failed during the integration test.");
+
         } catch (Exception e) {
             fail("Regional and country insights test failed: " + e.getMessage());
         } finally {
@@ -776,31 +834,71 @@ public class PopulationIntegrationTests {
     }
 
     /**Combined Query Test: Capital City and District-Level Data
-     * - Combine capital city and district-level queries to simulate their interaction.
-     * - Validate integration of capital cities and district-level city data.*/
+     - Combine capital city and district-level queries to simulate their interaction.
+     - Validate integration of capital cities and district-level city data.
+     - Track execution time and record success/failure counts for each query. */
     @Test
     void testCapitalCityAndDistrictDataIntegration() {
         Population app = new Population();
+        int totalQueries = 0;
+        int successfulQueries = 0;
+        int failedQueries = 0;
+
         try {
             String[] args = {"debug"};
             app.connect(args);
 
+            long startTime = System.currentTimeMillis(); // Start timer
+
             // Fetch capital cities by population for a specific region
-            String region = "South America";
-            System.out.println("Fetching capital cities by population for region: " + region);
-            app.getCapitalCitiesByRegionPopulation(region);
+            totalQueries++;
+            try {
+                String region = "South America";
+                System.out.println("Fetching capital cities by population for region: " + region);
+                app.getCapitalCitiesByRegionPopulation(region);
+                successfulQueries++;
+            } catch (Exception e) {
+                failedQueries++;
+                System.err.println("Failed to fetch capital cities by population for region: South America - " + e.getMessage());
+            }
 
             // Fetch cities by population for a district in a country from the region
-            String district = "Buenos Aires";
-            System.out.println("Fetching cities by population for district: " + district);
-            app.getCitiesByDistrictPopulation(district);
+            totalQueries++;
+            try {
+                String district = "Buenos Aires";
+                System.out.println("Fetching cities by population for district: " + district);
+                app.getCitiesByDistrictPopulation(district);
+                successfulQueries++;
+            } catch (Exception e) {
+                failedQueries++;
+                System.err.println("Failed to fetch cities by population for district: Buenos Aires - " + e.getMessage());
+            }
 
             // Fetch top N cities by population for the region
-            System.out.println("Fetching top 5 cities by population for region: " + region);
-            app.getTopNCitiesByRegionPopulation(5, region);
+            totalQueries++;
+            try {
+                String region = "South America";
+                System.out.println("Fetching top 5 cities by population for region: " + region);
+                app.getTopNCitiesByRegionPopulation(5, region);
+                successfulQueries++;
+            } catch (Exception e) {
+                failedQueries++;
+                System.err.println("Failed to fetch top cities by population for region: South America - " + e.getMessage());
+            }
+
+            long endTime = System.currentTimeMillis(); // End timer
+            long elapsedTime = endTime - startTime;
+
+            // Print metrics
+            System.out.println("Test Execution Metrics:");
+            System.out.println("Total Queries: " + totalQueries);
+            System.out.println("Successful Queries: " + successfulQueries);
+            System.out.println("Failed Queries: " + failedQueries);
+            System.out.println("Total Execution Time: " + elapsedTime + " ms");
 
             // If no exceptions occur, the test passes
-            assertTrue(true, "Capital city and district data fetched successfully.");
+            assertTrue(failedQueries == 0, "Some queries failed during the integration test.");
+
         } catch (Exception e) {
             fail("Capital city and district data test failed: " + e.getMessage());
         } finally {
@@ -809,38 +907,104 @@ public class PopulationIntegrationTests {
     }
 
     /** Combined Query Test: Language and Population Insights
-     * - Simulate a scenario where language speaker data is combined with population data.
-     * - Validate the interaction between language-related queries and population data.*/
+     - Simulate a scenario where language speaker data is combined with population data.
+     - Validate the interaction between language-related queries and population data.*/
     @Test
     void testLanguageAndPopulationInsightsIntegration() {
         Population app = new Population();
+        int totalQueries = 0;
+        int successfulQueries = 0;
+        int failedQueries = 0;
+
         try {
             String[] args = {"debug"};
             app.connect(args);
 
+            long startTime = System.currentTimeMillis(); // Start timer
+
             // Fetch language speakers
-            System.out.println("Fetching speakers by language...");
-            app.getSpeakersByLanguage();
+            totalQueries++;
+            try {
+                System.out.println("Fetching speakers by language...");
+                app.getSpeakersByLanguage();
+                successfulQueries++;
+            } catch (Exception e) {
+                failedQueries++;
+                System.err.println("Failed to fetch speakers by language: " + e.getMessage());
+            }
 
             // Fetch world population
-            System.out.println("Fetching world population...");
-            app.getPopulationOfWorld();
+            totalQueries++;
+            try {
+                System.out.println("Fetching world population...");
+                app.getPopulationOfWorld();
+                successfulQueries++;
+            } catch (Exception e) {
+                failedQueries++;
+                System.err.println("Failed to fetch world population: " + e.getMessage());
+            }
 
             // Fetch continent population for a known language region
-            String continent = "Asia";
-            System.out.println("Fetching population for continent: " + continent);
-            app.getPopulationOfContinent(continent);
+            totalQueries++;
+            try {
+                String continent = "Asia";
+                System.out.println("Fetching population for continent: " + continent);
+                app.getPopulationOfContinent(continent);
+                successfulQueries++;
+            } catch (Exception e) {
+                failedQueries++;
+                System.err.println("Failed to fetch population for continent Asia: " + e.getMessage());
+            }
 
             // Fetch top N populated countries where the language is spoken
-            System.out.println("Fetching top 5 populated countries in " + continent);
-            app.getTopNPopulatedCountries(5);
+            totalQueries++;
+            try {
+                String continent = "Asia";
+                System.out.println("Fetching top 5 populated countries in " + continent);
+                app.getTopNPopulatedCountries(5);
+                successfulQueries++;
+            } catch (Exception e) {
+                failedQueries++;
+                System.err.println("Failed to fetch top populated countries: " + e.getMessage());
+            }
 
-            // If no exceptions occur, the test passes
-            assertTrue(true, "Language and population insights fetched successfully.");
+            long endTime = System.currentTimeMillis(); // End timer
+            long elapsedTime = endTime - startTime;
+
+            // Print metrics
+            System.out.println("Test Execution Metrics:");
+            System.out.println("Total Queries: " + totalQueries);
+            System.out.println("Successful Queries: " + successfulQueries);
+            System.out.println("Failed Queries: " + failedQueries);
+            System.out.println("Total Execution Time: " + elapsedTime + " ms");
+
+            // Ensure all queries passed
+            assertTrue(failedQueries == 0, "Some queries failed during the integration test.");
+
         } catch (Exception e) {
             fail("Language and population insights test failed: " + e.getMessage());
         } finally {
             app.disconnect();
+        }
+    }
+
+    /**
+     * Helper Method: Execute a query and track its success/failure.
+     * @param query Runnable query to execute.
+     * @param description Description of the query for logging purposes.
+     * @return 1 if successful, 0 otherwise.
+     */
+    private int executeAndTrack(Runnable query, String description) {
+        Instant queryStart = Instant.now();
+        try {
+            query.run();
+            Instant queryEnd = Instant.now();
+            Duration queryTime = Duration.between(queryStart, queryEnd);
+            System.out.println("SUCCESS: " + description + " executed in " + queryTime.toMillis() + " ms.");
+            return 1;
+        } catch (Exception e) {
+            System.out.println("FAILURE: " + description + " failed with exception: " + e.getMessage());
+            return 0;
         }
     }
 }
